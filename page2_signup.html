@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkSpace - 회원가입</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px 0;
+        }
+
+        /* 배경 장식 요소들 */
+        .bg-decoration {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+
+        .bg-decoration:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            left: -200px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .bg-decoration:nth-child(2) {
+            width: 250px;
+            height: 250px;
+            top: 10%;
+            right: -125px;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        .bg-decoration:nth-child(3) {
+            width: 180px;
+            height: 180px;
+            bottom: -90px;
+            left: 15%;
+            animation: float 9s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-30px) rotate(5deg);
+            }
+        }
+
+        /* 회원가입 컨테이너 */
+        .signup-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 헤더 섹션 */
+        .header-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            border-radius: 18px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .welcome-text {
+            font-size: 26px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* 진행 표시기 */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #e5e7eb;
+            border-radius: 2px;
+            margin: 25px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0ea5e9, #2563eb);
+            border-radius: 2px;
+            width: 33%;
+            transition: width 0.5s ease;
+        }
+
+        .step-indicators {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .step.active {
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .step.completed {
+            color: #10b981;
+        }
+
+        /* 폼 스타일 */
+        .signup-form {
+            margin-top: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background-color: #f9fafb;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+        .form-input.success {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* 비밀번호 강도 표시기 */
+        .password-strength {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background-color: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .strength-weak {
+            background-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .strength-medium {
+            background-color: #f59e0b;
+            color: #f59e0b;
+        }
+
+        .strength-strong {
+            background-color: #10b981;
+            color: #10b981;
+        }
+
+        /* 유효성 검사 메시지 */
+        .validation-message {
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .validation-message.error {
+            color: #ef4444;
+            display: block;
+        }
+
+        .validation-message.success {
+            color: #10b981;
+            display: block;
+        }
+
+        /* 약관 동의 */
+        .terms-section {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .terms-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .terms-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #0ea5e9;
+            margin-top: 2px;
+        }
+
+        .terms-text {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .terms-link {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms-link:hover {
+            text-decoration: underline;
+        }
+
+        .terms-required {
+            font-weight: 600;
+        }
+
+        /* 회원가입 버튼 */
+        .signup-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .signup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.4);
+        }
+
+        .signup-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 로그인 링크 */
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .login-link a {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* 성공 메시지 */
+        .success-message {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        /* 반응형 */
+        @media (max-width: 480px) {
+            .signup-container {
+                margin: 10px;
+                padding: 30px 25px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .welcome-text {
+                font-size: 22px;
+            }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 배경 장식 -->
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+
+    <div class="signup-container">
+        <!-- 헤더 섹션 -->
+        <div class="header-section">
+            <div class="logo">🌊</div>
+            <h1 class="welcome-text">회원가입</h1>
+            <p class="subtitle">워크스페이스에 참여하여<br>팀과 함께 성장하세요</p>
+        </div>
+
+        <!-- 진행 표시기 -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="step-indicators">
+            <div class="step active" id="step1">
+                <span>1️⃣</span>
+                <span>기본 정보</span>
+            </div>
+            <div class="step" id="step2">
+                <span>2️⃣</span>
+                <span>계정 설정</span>
+            </div>
+            <div class="step" id="step3">
+                <span>3️⃣</span>
+                <span>완료</span>
+            </div>
+        </div>
+
+        <!-- 성공 메시지 -->
+        <div class="success-message" id="success-message">
+            <div class="success-icon">🎉</div>
+            <h3>회원가입 완료!</h3>
+            <p>이메일 인증 후 로그인하실 수 있습니다.</p>
+        </div>
+
+        <!-- 회원가입 폼 -->
+        <form class="signup-form" id="signup-form">
+            <!-- 1단계: 기본 정보 -->
+            <div class="form-step" id="form-step-1">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="firstName">
+                            이름 <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="firstName" 
+                            class="form-input" 
+                            placeholder="홍길동"
+                            required
+                        >
+                        <div class="validation-message" id="firstName-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="lastName">성</label>
+                        <input 
+                            type="text" 
+                            id="lastName" 
+                            class="form-input" 
+                            placeholder="김"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">
+                        이메일 <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="form-input" 
+                        placeholder="name@company.com"
+                        required
+                    >
+                    <div class="validation-message" id="email-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="company">
+                        회사명 <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="company" 
+                        class="form-input" 
+                        placeholder="회사명을 입력하세요"
+                        required
+                    >
+                    <div class="validation-message" id="company-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="position">직책</label>
+                    <input 
+                        type="text" 
+                        id="position" 
+                        class="form-input" 
+                        placeholder="개발자, 디자이너, 기획자 등"
+                    >
+                </div>
+            </div>
+
+            <!-- 2단계: 계정 설정 -->
+            <div class="form-step" id="form-step-2" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label" for="password">
+                        비밀번호 <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input" 
+                        placeholder="8자 이상의 안전한 비밀번호"
+                        required
+                    >
+                    <div class="password-strength" id="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strength-fill"></div>
+                        </div>
+                        <div class="strength-text" id="strength-text"></div>
+                    </div>
+                    <div class="validation-message" id="password-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">
+                        비밀번호 확인 <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        class="form-input" 
+                        placeholder="비밀번호를 다시 입력하세요"
+                        required
+                    >
+                    <div class="validation-message" id="confirmPassword-error"></div>
+                </div>
+
+                <div class="terms-section">
+                    <div class="terms-item">
+                        <input type="checkbox" class="checkbox" id="terms-service" required>
+                        <label class="terms-text terms-required" for="terms-service">
+                            <a href="#" class="terms-link">서비스 이용약관</a>에 동의합니다 <span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="terms-item">
+                        <input type="checkbox" class="checkbox" id="terms-privacy" required>
+                        <label class="terms-text terms-required" for="terms-privacy">
+                            <a href="#" class="terms-link">개인정보 처리방침</a>에 동의합니다 <span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="terms-item">
+                        <input type="checkbox" class="checkbox" id="terms-marketing">
+                        <label class="terms-text" for="terms-marketing">
+                            마케팅 정보 수신에 동의합니다 (선택)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="signup-button" id="signup-btn" disabled>
+                <div class="loading-spinner" id="loading-spinner"></div>
+                <span id="btn-text">다음 단계</span>
+            </button>
+        </form>
+
+        <!-- 로그인 링크 -->
+        <div class="login-link">
+            이미 계정이 있으신가요? <a href="#" onclick="goToLogin()">로그인</a>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        // 폼 유효성 검사 및 단계 관리
+        const form = document.getElementById('signup-form');
+        const progressFill = document.getElementById('progress-fill');
+        const signupBtn = document.getElementById('signup-btn');
+        const btnText = document.getElementById('btn-text');
+
+        // 입력 필드 실시간 유효성 검사
+        document.getElementById('firstName').addEventListener('input', validateName);
+        document.getElementById('email').addEventListener('input', validateEmail);
+        document.getElementById('company').addEventListener('input', validateCompany);
+        document.getElementById('password').addEventListener('input', validatePassword);
+        document.getElementById('confirmPassword').addEventListener('input', validatePasswordConfirm);
+
+        function validateName() {
+            const firstName = document.getElementById('firstName');
+            const error = document.getElementById('firstName-error');
+            
+            if (firstName.value.length < 2) {
+                firstName.classList.add('error');
+                firstName.classList.remove('success');
+                error.textContent = '이름은 2자 이상이어야 합니다.';
+                error.className = 'validation-message error';
+            } else {
+                firstName.classList.remove('error');
+                firstName.classList.add('success');
+                error.className = 'validation-message';
+            }
+            checkStep1Validity();
+        }
+
+        function validateEmail() {
+            const email = document.getElementById('email');
+            const error = document.getElementById('email-error');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email.value)) {
+                email.classList.add('error');
+                email.classList.remove('success');
+                error.textContent = '유효한 이메일 주소를 입력하세요.';
+                error.className = 'validation-message error';
+            } else {
+                email.classList.remove('error');
+                email.classList.add('success');
+                error.textContent = '사용 가능한 이메일입니다.';
+                error.className = 'validation-message success';
+            }
+            checkStep1Validity();
+        }
+
+        function validateCompany() {
+            const company = document.getElementById('company');
+            const error = document.getElementById('company-error');
+            
+            if (company.value.length < 2) {
+                company.classList.add('error');
+                company.classList.remove('success');
+                error.textContent = '회사명을 입력하세요.';
+                error.className = 'validation-message error';
+            } else {
+                company.classList.remove('error');
+                company.classList.add('success');
+                error.className = 'validation-message';
+            }
+            checkStep1Validity();
+        }
+
+        function validatePassword() {
+            const password = document.getElementById('password');
+            const error = document.getElementById('password-error');
+            const strengthIndicator = document.getElementById('password-strength');
+            const strengthFill = document.getElementById('strength-fill');
+            const strengthText = document.getElementById('strength-text');
+            
+            strengthIndicator.style.display = 'block';
+            
+            const value = password.value;
+            let strength = 0;
+            let strengthClass = '';
+            let strengthLabel = '';
+            
+            if (value.length >= 8) strength++;
+            if (/[a-z]/.test(value)) strength++;
+            if (/[A-Z]/.test(value)) strength++;
+            if (/[0-9]/.test(value)) strength++;
+            if (/[^a-zA-Z0-9]/.test(value)) strength++;
+            
+            if (strength < 2) {
+                strengthClass = 'strength-weak';
+                strengthLabel = '약함';
+                strengthFill.style.width = '20%';
+            } else if (strength < 4) {
+                strengthClass = 'strength-medium';
+                strengthLabel = '보통';
+                strengthFill.style.width = '60%';
+            } else {
+                strengthClass = 'strength-strong';
+                strengthLabel = '강함';
+                strengthFill.style.width = '100%';
+            }
+            
+            strengthFill.className = `strength-fill ${strengthClass}`;
+            strengthText.textContent = `비밀번호 강도: ${strengthLabel}`;
+            strengthText.className = `strength-text ${strengthClass}`;
+            
+            if (value.length < 8) {
+                password.classList.add('error');
+                password.classList.remove('success');
+                error.textContent = '비밀번호는 8자 이상이어야 합니다.';
+                error.className = 'validation-message error';
+            } else {
+                password.classList.remove('error');
+                password.classList.add('success');
+                error.className = 'validation-message';
+            }
+            
+            validatePasswordConfirm();
+            checkStep2Validity();
+        }
+
+        function validatePasswordConfirm() {
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const error = document.getElementById('confirmPassword-error');
+            
+            if (confirmPassword.value && confirmPassword.value !== password.value) {
+                confirmPassword.classList.add('error');
+                confirmPassword.classList.remove('success');
+                error.textContent = '비밀번호가 일치하지 않습니다.';
+                error.className = 'validation-message error';
+            } else if (confirmPassword.value) {
+                confirmPassword.classList.remove('error');
+                confirmPassword.classList.add('success');
+                error.textContent = '비밀번호가 일치합니다.';
+                error.className = 'validation-message success';
+            }
+            checkStep2Validity();
+        }
+
+        function checkStep1Validity() {
+            const firstName = document.getElementById('firstName').value.length >= 2;
+            const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value);
+            const company = document.getElementById('company').value.length >= 2;
+            
+            signupBtn.disabled = !(firstName && email && company);
+        }
+
+        function checkStep2Validity() {
+            const password = document.getElementById('password').value.length >= 8;
+            const confirmPassword = document.getElementById('confirmPassword').value === document.getElementById('password').value;
+            const termsService = document.getElementById('terms-service').checked;
+            const termsPrivacy = document.getElementById('terms-privacy').checked;
+            
+            signupBtn.disabled = !(password && confirmPassword && termsService && termsPrivacy);
+        }
+
+        // 폼 제출 처리
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (currentStep === 1) {
+                // 1단계에서 2단계로
+                nextStep();
+            } else if (currentStep === 2) {
+                // 최종 회원가입 처리
+                processSignup();
+            }
+        });
+
+        function nextStep() {
+            currentStep = 2;
+            
+            // UI 업데이트
+            document.getElementById('form-step-1').style.display = 'none';
+            document.getElementById('form-step-2').style.display = 'block';
+            
+            progressFill.style.width = '66%';
+            
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step2').classList.add('active');
+            
+            btnText.textContent = '회원가입 완료';
+            signupBtn.disabled = true;
+        }
+
+        function processSignup() {
+            const spinner = document.getElementById('loading-spinner');
+            
+            // 로딩 상태
+            signupBtn.disabled = true;
+            btnText.textContent = '처리중...';
+            spinner.style.display = 'inline-block';
+            
+            // 가짜 처리 (실제로는 서버에 요청)
+            setTimeout(() => {
+                // 성공 상태
+                currentStep = 3;
+                progressFill.style.width = '100%';
+                
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step2').classList.add('completed');
+                document.getElementById('step3').classList.add('completed');
+                
+                document.getElementById('form-step-2').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+                signupBtn.style.display = 'none';
+                
+                setTimeout(() => {
+                    alert('인증 이메일이 발송되었습니다!');
+                }, 1000);
+            }, 2000);
+        }
+
+        function goToLogin() {
+            alert('로그인 페이지로 이동합니다!');
+        }
+
+        // 약관 체크박스 이벤트
+        document.getElementById('terms-service').addEventListener('change', checkStep2Validity);
+        document.getElementById('terms-privacy').addEventListener('change', checkStep2Validity);
+    </script>
+</body>
+</html>
