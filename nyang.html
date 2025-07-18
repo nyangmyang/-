@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkSpace - 협업 툴</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f1f5f9;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* 사이드바 */
+        .sidebar {
+            width: 280px;
+            background-color: #0ea5e9;
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .workspace-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .workspace-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .workspace-info {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .channels-section {
+            padding: 20px 0;
+            flex: 1;
+        }
+
+        .section-title {
+            padding: 0 20px;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .channel-list {
+            list-style: none;
+        }
+
+        .channel-item {
+            padding: 8px 20px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 0 20px 20px 0;
+            margin-right: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .channel-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .channel-item.active {
+            background-color: #2563eb;
+            font-weight: bold;
+        }
+
+        .channel-icon {
+            margin-right: 8px;
+        }
+
+        .user-section {
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .user-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background-color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* 메인 영역 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background-color: white;
+        }
+
+        .channel-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .channel-description {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .welcome-message {
+            padding: 40px;
+            text-align: center;
+            background-color: #f8fafc;
+            margin: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .welcome-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #0ea5e9;
+            border-radius: 12px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .welcome-description {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 12px;
+            background-color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .message-author {
+            font-weight: bold;
+            color: #1e293b;
+            margin-right: 8px;
+        }
+
+        .message-time {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .message-text {
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        /* 입력 영역 */
+        .message-input-container {
+            padding: 20px;
+            background-color: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .message-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .message-input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .input-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .input-btn {
+            padding: 6px 8px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #64748b;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .input-btn:hover {
+            background-color: #f1f5f9;
+            color: #0ea5e9;
+        }
+
+        .send-btn {
+            padding: 8px 16px;
+            background-color: #0ea5e9;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover {
+            background-color: #0284c7;
+        }
+
+        /* 스크롤바 스타일 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="workspace-header">
+            <div class="workspace-name">🌊 워크스페이스</div>
+            <div class="workspace-info">팀 협업 공간</div>
+        </div>
+        
+        <div class="channels-section">
+            <div class="section-title">채널</div>
+            <ul class="channel-list">
+                <li class="channel-item active">
+                    <span class="channel-icon">#</span>
+                    전체
+                </li>
+                <li class="channel-item">
+                    <span class="channel-icon">#</span>
+                    개발팀
+                </li>
+                <li class="channel-item">
+                    <span class="channel-icon">#</span>
+                    디자인
+                </li>
+                <li class="channel-item">
+                    <span class="channel-icon">#</span>
+                    마케팅
+                </li>
+                <li class="channel-item">
+                    <span class="channel-icon">#</span>
+                    공지사항
+                </li>
+            </ul>
+        </div>
+
+        <div class="user-section">
+            <div class="section-title">팀원</div>
+            <div class="user-item">
+                <div class="user-avatar">김</div>
+                <span>김개발</span>
+            </div>
+            <div class="user-item">
+                <div class="user-avatar">이</div>
+                <span>이디자인</span>
+            </div>
+            <div class="user-item">
+                <div class="user-avatar">박</div>
+                <span>박마케팅</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="chat-header">
+            <div class="channel-title"># 전체</div>
+            <div class="channel-description">전체 팀원이 참여하는 채널입니다</div>
+        </div>
+
+        <div class="welcome-message">
+            <div class="welcome-icon">🏠</div>
+            <div class="welcome-title"># 전체 채널에 모두가 있습니다</div>
+            <div class="welcome-description">
+                공지와 회사 뉴스, 휴일 이벤트 또는 천천한 아이디어를 공유하세요. ⭐
+            </div>
+        </div>
+
+        <div class="chat-messages">
+            <div class="message">
+                <div class="message-avatar">정</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-author">정진섭</span>
+                        <span class="message-time">오전 9:14</span>
+                    </div>
+                    <div class="message-text">
+                        새로운 프로젝트 시작합니다!<br>
+                        모든 팀원분들의 적극적인 참여 부탁드려요 🚀
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="message-input-container">
+            <textarea class="message-input" placeholder="# 전체 채널에 메시지 보내기" rows="1"></textarea>
+            <div class="input-toolbar">
+                <div class="input-actions">
+                    <button class="input-btn">📎</button>
+                    <button class="input-btn">😊</button>
+                    <button class="input-btn">@</button>
+                    <button class="input-btn">🎤</button>
+                </div>
+                <button class="send-btn">전송</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 간단한 인터랙션
+        document.querySelectorAll('.channel-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.channel-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                const channelName = this.textContent.trim();
+                document.querySelector('.channel-title').textContent = channelName;
+                document.querySelector('.channel-description').textContent = `${channelName} 채널입니다`;
+            });
+        });
+
+        // 메시지 입력 자동 크기 조절
+        const messageInput = document.querySelector('.message-input');
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // 엔터키로 전송
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const input = document.querySelector('.message-input');
+            const text = input.value.trim();
+            
+            if (text) {
+                const messagesContainer = document.querySelector('.chat-messages');
+                const messageHtml = `
+                    <div class="message">
+                        <div class="message-avatar">나</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-author">나</span>
+                                <span class="message-time">방금 전</span>
+                            </div>
+                            <div class="message-text">${text}</div>
+                        </div>
+                    </div>
+                `;
+                messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
+                input.value = '';
+                input.style.height = 'auto';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        document.querySelector('.send-btn').addEventListener('click', sendMessage);
+    </script>
+</body>
+</html>

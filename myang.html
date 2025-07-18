@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>팀 워크스페이스</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f1f5f9;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* 좌측 기능 툴바 */
+        .left-toolbar {
+            width: 80px;
+            background-color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 20px;
+        }
+
+        .toolbar-item {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .toolbar-item:hover {
+            background-color: #0ea5e9;
+            transform: scale(1.1);
+        }
+
+        .toolbar-item.active {
+            background-color: #0ea5e9;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .toolbar-tooltip {
+            position: absolute;
+            left: 60px;
+            background-color: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+
+        .toolbar-item:hover .toolbar-tooltip {
+            opacity: 1;
+        }
+
+        /* 사이드바 */
+        .sidebar {
+            width: 280px;
+            background-color: #0ea5e9;
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .team-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .team-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-info {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .content-section {
+            padding: 20px 0;
+            flex: 1;
+        }
+
+        .section-title {
+            padding: 0 20px;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .item-list {
+            list-style: none;
+        }
+
+        .list-item {
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 0 20px 20px 0;
+            margin-right: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .list-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .list-item.active {
+            background-color: #2563eb;
+            font-weight: bold;
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-icon {
+            width: 24px;
+            height: 24px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .item-meta {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+        }
+
+        .content-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .header-left p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn.primary {
+            background-color: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+        }
+
+        .action-btn:hover {
+            background-color: #f8fafc;
+        }
+
+        .action-btn.primary:hover {
+            background-color: #0284c7;
+        }
+
+        /* 콘텐츠 영역 */
+        .content-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .content-card {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .content-card:hover {
+            border-color: #0ea5e9;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #0ea5e9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .card-description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-new {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-urgent {
+            background-color: #fef2f2;
+            color: #dc2626;
+        }
+
+        .status-progress {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        /* 업로드 드래그 영역 */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #64748b;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #0ea5e9;
+            background-color: #f0f9ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #0ea5e9;
+            background-color: #e0f2fe;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .left-toolbar {
+                width: 60px;
+            }
+            
+            .sidebar {
+                width: 240px;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 좌측 기능 툴바 -->
+    <div class="left-toolbar">
+        <div class="toolbar-item active" data-function="files">
+            📁
+            <div class="toolbar-tooltip">파일</div>
+        </div>
+        <div class="toolbar-item" data-function="chat">
+            💬
+            <div class="toolbar-tooltip">대화</div>
+            <div class="notification-badge">3</div>
+        </div>
+        <div class="toolbar-item" data-function="notifications">
+            🔔
+            <div class="toolbar-tooltip">알림</div>
+            <div class="notification-badge">7</div>
+        </div>
+        <div class="toolbar-item" data-function="calendar">
+            📅
+            <div class="toolbar-tooltip">일정</div>
+        </div>
+        <div class="toolbar-item" data-function="tasks">
+            ✅
+            <div class="toolbar-tooltip">할일</div>
+        </div>
+    </div>
+
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <div class="team-header">
+            <div class="team-name">
+                🚀 개발팀
+            </div>
+            <div class="team-info">12명의 팀원 • 활성</div>
+        </div>
+        
+        <div class="content-section" id="sidebar-content">
+            <!-- 파일 섹션 -->
+            <div class="file-section">
+                <div class="section-title">최근 파일</div>
+                <ul class="item-list">
+                    <li class="list-item active">
+                        <div class="item-info">
+                            <div class="file-icon">📄</div>
+                            <div>
+                                <div>프로젝트 명세서.pdf</div>
+                                <div class="item-meta">2시간 전</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-item">
+                        <div class="item-info">
+                            <div class="file-icon">📊</div>
+                            <div>
+                                <div>진행현황.xlsx</div>
+                                <div class="item-meta">어제</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-item">
+                        <div class="item-info">
+                            <div class="file-icon">🎨</div>
+                            <div>
+                                <div>디자인 시안.fig</div>
+                                <div class="item-meta">3일 전</div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="main-content">
+        <div class="content-header">
+            <div class="header-left">
+                <h1 id="content-title">팀 파일</h1>
+                <p id="content-subtitle">팀에서 공유하는 모든 파일을 관리하세요</p>
+            </div>
+            <div class="header-actions">
+                <button class="action-btn">
+                    🔍 검색
+                </button>
+                <button class="action-btn primary">
+                    📤 파일 업로드
+                </button>
+            </div>
+        </div>
+
+        <div class="content-area" id="main-content">
+            <!-- 파일 업로드 영역 -->
+            <div class="upload-area" id="upload-area">
+                <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
+                <h3>파일을 드래그하여 업로드</h3>
+                <p>또는 클릭하여 파일 선택</p>
+            </div>
+
+            <!-- 파일 카드들 -->
+            <div class="content-grid" style="margin-top: 20px;">
+                <div class="content-card">
+                    <div class="card-header">
+                        <div class="card-icon">📄</div>
+                        <div class="card-title">프로젝트 기획서</div>
+                    </div>
+                    <div class="card-description">
+                        새로운 프로젝트의 전체적인 기획과 일정이 담긴 문서입니다.
+                    </div>
+                    <div class="card-footer">
+                        <span>김개발 • 2시간 전</span>
+                        <span class="status-badge status-new">새로운</span>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <div class="card-icon">📊</div>
+                        <div class="card-title">월간 진행 보고서</div>
+                    </div>
+                    <div class="card-description">
+                        이번 달 프로젝트 진행 상황과 주요 성과를 정리한 보고서입니다.
+                    </div>
+                    <div class="card-footer">
+                        <span>이팀장 • 1일 전</span>
+                        <span class="status-badge status-progress">진행중</span>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <div class="card-icon">🎨</div>
+                        <div class="card-title">UI 디자인 시안</div>
+                    </div>
+                    <div class="card-description">
+                        새로운 웹 애플리케이션의 사용자 인터페이스 디자인 초안입니다.
+                    </div>
+                    <div class="card-footer">
+                        <span>박디자인 • 3일 전</span>
+                        <span class="status-badge status-urgent">검토필요</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 툴바 아이템 클릭 이벤트
+        document.querySelectorAll('.toolbar-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 활성화 상태 변경
+                document.querySelectorAll('.toolbar-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                const func = this.dataset.function;
+                updateContent(func);
+            });
+        });
+
+        // 콘텐츠 업데이트 함수
+        function updateContent(func) {
+            const title = document.getElementById('content-title');
+            const subtitle = document.getElementById('content-subtitle');
+            const content = document.getElementById('main-content');
+
+            switch(func) {
+                case 'files':
+                    title.textContent = '팀 파일';
+                    subtitle.textContent = '팀에서 공유하는 모든 파일을 관리하세요';
+                    content.innerHTML = getFilesContent();
+                    break;
+                case 'chat':
+                    title.textContent = '팀 대화';
+                    subtitle.textContent = '팀원들과 실시간으로 소통하세요';
+                    content.innerHTML = getChatContent();
+                    break;
+                case 'notifications':
+                    title.textContent = '알림';
+                    subtitle.textContent = '중요한 업데이트와 알림을 확인하세요';
+                    content.innerHTML = getNotificationsContent();
+                    break;
+                case 'calendar':
+                    title.textContent = '팀 일정';
+                    subtitle.textContent = '팀의 모든 일정을 한눈에 확인하세요';
+                    content.innerHTML = getCalendarContent();
+                    break;
+                case 'tasks':
+                    title.textContent = '할일 관리';
+                    subtitle.textContent = '팀의 작업과 할일을 관리하세요';
+                    content.innerHTML = getTasksContent();
+                    break;
+            }
+        }
+
+        function getFilesContent() {
+            return `
+                <div class="upload-area" id="upload-area">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
+                    <h3>파일을 드래그하여 업로드</h3>
+                    <p>또는 클릭하여 파일 선택</p>
+                </div>
+                <div class="content-grid" style="margin-top: 20px;">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">📄</div>
+                            <div class="card-title">프로젝트 기획서</div>
+                        </div>
+                        <div class="card-description">새로운 프로젝트의 전체적인 기획과 일정이 담긴 문서입니다.</div>
+                        <div class="card-footer">
+                            <span>김개발 • 2시간 전</span>
+                            <span class="status-badge status-new">새로운</span>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">📊</div>
+                            <div class="card-title">월간 진행 보고서</div>
+                        </div>
+                        <div class="card-description">이번 달 프로젝트 진행 상황과 주요 성과를 정리한 보고서입니다.</div>
+                        <div class="card-footer">
+                            <span>이팀장 • 1일 전</span>
+                            <span class="status-badge status-progress">진행중</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getChatContent() {
+            return `
+                <div style="background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+                    <h3>팀 대화방</h3>
+                    <p>실시간으로 팀원들과 소통하고 협업하세요</p>
+                </div>
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">👥</div>
+                            <div class="card-title">일반 대화</div>
+                        </div>
+                        <div class="card-description">팀 전체가 참여하는 일반적인 대화방입니다.</div>
+                        <div class="card-footer">
+                            <span>활성 멤버 12명</span>
+                            <span class="status-badge status-new">새 메시지 3</span>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">🚀</div>
+                            <div class="card-title">프로젝트 논의</div>
+                        </div>
+                        <div class="card-description">현재 진행중인 프로젝트에 대한 논의방입니다.</div>
+                        <div class="card-footer">
+                            <span>활성 멤버 8명</span>
+                            <span class="status-badge status-urgent">긴급</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getNotificationsContent() {
+            return `
+                <div style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔔</div>
+                    <h3>팀 알림</h3>
+                    <p>중요한 업데이트와 알림을 놓치지 마세요</p>
+                </div>
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">📢</div>
+                            <div class="card-title">프로젝트 마감 알림</div>
+                        </div>
+                        <div class="card-description">현재 프로젝트의 마감일이 3일 남았습니다.</div>
+                        <div class="card-footer">
+                            <span>방금 전</span>
+                            <span class="status-badge status-urgent">긴급</span>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">📝</div>
+                            <div class="card-title">새 문서 업로드</div>
+                        </div>
+                        <div class="card-description">김개발님이 새로운 기획서를 업로드했습니다.</div>
+                        <div class="card-footer">
+                            <span>2시간 전</span>
+                            <span class="status-badge status-new">새로운</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getCalendarContent() {
+            return `
+                <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📅</div>
+                    <h3>팀 일정 관리</h3>
+                    <p>모든 팀 일정을 한눈에 확인하고 관리하세요</p>
+                </div>
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">🎯</div>
+                            <div class="card-title">프로젝트 킥오프</div>
+                        </div>
+                        <div class="card-description">새 프로젝트 시작을 위한 팀 미팅입니다.</div>
+                        <div class="card-footer">
+                            <span>오늘 오후 2시</span>
+                            <span class="status-badge status-urgent">오늘</span>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">📊</div>
+                            <div class="card-title">주간 리뷰</div>
+                        </div>
+                        <div class="card-description">이번 주 진행사항과 다음 주 계획을 점검합니다.</div>
+                        <div class="card-footer">
+                            <span>내일 오전 10시</span>
+                            <span class="status-badge status-progress">예정</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getTasksContent() {
+            return `
+                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">✅</div>
+                    <h3>할일 관리</h3>
+                    <p>팀의 모든 작업을 체계적으로 관리하세요</p>
+                </div>
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">🔥</div>
+                            <div class="card-title">UI 개발 완료</div>
+                        </div>
+                        <div class="card-description">메인 페이지 UI 컴포넌트 개발을 완료해야 합니다.</div>
+                        <div class="card-footer">
+                            <span>김개발</span>
+                            <span class="status-badge status-urgent">급함</span>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="card-icon">🎨</div>
+                            <div class="card-title">디자인 리뷰</div>
+                        </div>
+                        <div class="card-description">새로운 디자인 시안에 대한 팀 리뷰가 필요합니다.</div>
+                        <div class="card-footer">
+                            <span>박디자인</span>
+                            <span class="status-badge status-progress">진행중</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 파일 업로드 드래그 앤 드롭
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+            const uploadArea = document.getElementById('upload-area');
+            if (uploadArea) {
+                uploadArea.innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 16px; color: #0ea5e9;">✅</div>
+                    <h3 style="color: #0ea5e9;">파일 업로드 완료!</h3>
+                    <p>파일이 성공적으로 업로드되었습니다.</p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
