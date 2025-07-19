@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 완료 - WorkSpace</title>
+    
+    <!-- CSS 파일들 임포트 -->
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/page4.css">
+</head>
+<body>
+    <!-- 축하 배경 애니메이션 -->
+    <div class="celebration-bg">
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+    </div>
+
+    <div class="verified-container">
+        <!-- 성공 아이콘 -->
+        <div class="success-animation">
+            <div class="verified-icon">
+                ✅
+            </div>
+        </div>
+
+        <!-- 메인 메시지 -->
+        <h1 class="title">인증 완료!</h1>
+        <p class="subtitle">
+            🎉 축하합니다!<br>
+            이메일 인증이 성공적으로 완료되었습니다.
+        </p>
+
+        <!-- 인증 상태 -->
+        <div class="verification-status">
+            <div class="status-icon">🔐</div>
+            <div class="status-title">계정이 활성화되었습니다</div>
+            <div class="status-message">
+                이제 모든 워크스페이스 기능을 자유롭게 사용하실 수 있습니다.
+            </div>
+            <div class="verification-time" id="verification-time">
+                인증 완료 시간: 방금 전
+            </div>
+        </div>
+
+        <!-- 다음 단계 -->
+        <div class="next-steps">
+            <div class="steps-title">
+                🚀 이제 시작해보세요!
+            </div>
+            
+            <div class="benefit-item">
+                <div class="benefit-icon">👤</div>
+                <div class="benefit-text">
+                    <div class="benefit-title">프로필 설정</div>
+                    <div class="benefit-desc">개인화된 워크스페이스 만들기</div>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="benefit-icon">👥</div>
+                <div class="benefit-text">
+                    <div class="benefit-title">팀 참여 또는 생성</div>
+                    <div class="benefit-desc">동료들과 함께 협업 시작</div>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="benefit-icon">💬</div>
+                <div class="benefit-text">
+                    <div class="benefit-title">실시간 소통</div>
+                    <div class="benefit-desc">채팅과 파일 공유로 효율적인 업무</div>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="benefit-icon">📊</div>
+                <div class="benefit-text">
+                    <div class="benefit-title">프로젝트 관리</div>
+                    <div class="benefit-desc">할일과 일정을 체계적으로 관리</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 액션 버튼들 -->
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="startAccountSetup()">
+                🔧 계정 설정하기
+            </button>
+            
+            <button class="btn btn-secondary" onclick="skipToWorkspace()">
+                ⚡ 바로 워크스페이스 시작
+            </button>
+        </div>
+
+        <!-- 로그인 옵션 -->
+        <div class="login-option">
+            <div class="login-text">나중에 설정하고 싶으신가요?</div>
+            <a href="#" class="login-link" onclick="goToLogin()">로그인 페이지로 이동</a>
+            <div class="countdown" id="auto-redirect" style="display: none;">
+                <span class="countdown-number" id="countdown-timer">10</span>초 후 자동으로 계정 설정으로 이동합니다
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 페이지 로드시 현재 시간 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const timeString = now.toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('verification-time').textContent = `인증 완료 시간: ${timeString}`;
+
+            // 자동 리다이렉트 시작 (선택적)
+            // startAutoRedirect();
+        });
+
+        // 계정 설정 시작
+        function startAccountSetup() {
+            // 로딩 효과
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.style.opacity = '0.7';
+            btn.textContent = '이동 중...';
+            
+            setTimeout(() => {
+                alert('🎉 계정 설정 페이지로 이동합니다!');
+                // 실제로는 계정 설정 페이지로 리다이렉트
+                // window.location.href = '/account-setup';
+                
+                // 데모용 원복
+                btn.style.opacity = '1';
+                btn.textContent = originalText;
+            }, 1500);
+        }
+
+        // 바로 워크스페이스 시작
+        function skipToWorkspace() {
+            if (confirm('계정 설정을 건너뛰고 바로 워크스페이스로 이동하시겠습니까?\n\n나중에 언제든지 설정할 수 있습니다.')) {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.style.opacity = '0.7';
+                btn.textContent = '이동 중...';
+                
+                setTimeout(() => {
+                    alert('🚀 워크스페이스로 이동합니다!');
+                    // 실제로는 워크스페이스 메인 페이지로 리다이렉트
+                    // window.location.href = '/workspace';
+                    
+                    // 데모용 원복
+                    btn.style.opacity = '1';
+                    btn.textContent = originalText;
+                }, 1500);
+            }
+        }
+
+        // 로그인 페이지로 이동
+        function goToLogin() {
+            if (confirm('로그인 페이지로 이동하시겠습니까?\n\n인증이 완료되었으므로 바로 로그인하실 수 있습니다.')) {
+                alert('로그인 페이지로 이동합니다.');
+                // 실제로는 로그인 페이지로 리다이렉트
+                // window.location.href = '/login';
+            }
+        }
+
+        // 자동 리다이렉트 (선택적 기능)
+        function startAutoRedirect() {
+            let countdown = 10;
+            const autoRedirect = document.getElementById('auto-redirect');
+            const timer = document.getElementById('countdown-timer');
+            
+            autoRedirect.style.display = 'block';
+            
+            const interval = setInterval(() => {
+                countdown--;
+                timer.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    startAccountSetup();
+                }
+            }, 1000);
+            
+            // 사용자가 다른 버튼을 클릭하면 자동 리다이렉트 취소
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    clearInterval(interval);
+                    autoRedirect.style.display = 'none';
+                });
+            });
+        }
+
+        // 축하 효과음 (선택적)
+        function playSuccessSound() {
+            // 웹 오디오 API를 사용한 간단한 성공 사운드
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // 성공 효과음 재생 (사용자 상호작용 후에만 가능)
+        document.addEventListener('click', function() {
+            // playSuccessSound();
+        }, { once: true });
+    </script>
+</body>
+</html>

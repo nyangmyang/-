@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkSpace - 로그인</title>
+    
+    <!-- CSS 파일들 임포트 -->
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+    <!-- 배경 장식 -->
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+
+    <!-- 로그인 컨테이너 -->
+    <div class="login-container">
+        <!-- 로고 섹션 -->
+        <div class="logo-section">
+            <div class="logo">🌊</div>
+            <h1 class="welcome-text">환영합니다!</h1>
+            <p class="subtitle">워크스페이스에 로그인하여<br>팀과 함께 협업을 시작하세요</p>
+        </div>
+
+        <!-- 에러 메시지 -->
+        <div class="error-message" id="error-message">
+            이메일 또는 비밀번호가 올바르지 않습니다.
+        </div>
+
+        <!-- 로그인 폼 -->
+        <form class="login-form" id="login-form">
+            <div class="form-group">
+                <label class="form-label" for="email">이메일</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    class="form-input" 
+                    placeholder="name@company.com"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">비밀번호</label>
+                <div class="password-group">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input" 
+                        placeholder="비밀번호를 입력하세요"
+                        required
+                    >
+                    <button type="button" class="password-toggle" id="password-toggle">
+                        👁️
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" class="checkbox" id="remember">
+                    <span>로그인 유지</span>
+                </label>
+                <a href="#" class="forgot-password">비밀번호 찾기</a>
+            </div>
+
+            <button type="submit" class="login-button" id="login-btn">
+                <div class="loading-spinner" id="loading-spinner"></div>
+                <span id="btn-text">로그인</span>
+            </button>
+        </form>
+
+        <!-- 구분선 -->
+        <div class="divider">
+            <span>또는</span>
+        </div>
+
+        <!-- 소셜 로그인 -->
+        <div class="social-login">
+            <button class="social-button" onclick="socialLogin('google')">
+                🔍
+            </button>
+            <button class="social-button" onclick="socialLogin('github')">
+                🐙
+            </button>
+            <button class="social-button" onclick="socialLogin('apple')">
+                🍎
+            </button>
+        </div>
+
+        <!-- 회원가입 링크 -->
+        <div class="signup-link">
+            아직 계정이 없으신가요? <a href="#" onclick="showSignup()">회원가입</a>
+        </div>
+    </div>
+
+    <!-- 성공 애니메이션 -->
+    <div class="success-animation" id="success-animation">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <h2>로그인 성공!</h2>
+            <p>워크스페이스로 이동중...</p>
+        </div>
+    </div>
+
+    <script>
+        // 비밀번호 표시/숨기기
+        document.getElementById('password-toggle').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const isPassword = passwordInput.type === 'password';
+            
+            passwordInput.type = isPassword ? 'text' : 'password';
+            this.textContent = isPassword ? '🙈' : '👁️';
+        });
+
+        // 로그인 폼 제출
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('login-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('loading-spinner');
+            const errorMessage = document.getElementById('error-message');
+
+            // 로딩 상태
+            loginBtn.classList.add('loading');
+            btnText.textContent = '로그인 중...';
+            spinner.style.display = 'inline-block';
+            errorMessage.style.display = 'none';
+
+            // 가짜 로그인 처리 (실제로는 서버에 요청)
+            setTimeout(() => {
+                if (email && password.length >= 6) {
+                    // 성공
+                    document.getElementById('success-animation').style.display = 'flex';
+                    
+                    setTimeout(() => {
+                        alert('워크스페이스로 이동합니다!');
+                        // 실제로는 다음 페이지로 리다이렉트
+                        // window.location.href = '/workspace';
+                    }, 2000);
+                } else {
+                    // 실패
+                    errorMessage.style.display = 'block';
+                    loginBtn.classList.remove('loading');
+                    btnText.textContent = '로그인';
+                    spinner.style.display = 'none';
+                }
+            }, 1500);
+        });
+
+        // 소셜 로그인
+        function socialLogin(provider) {
+            alert(`${provider} 로그인 기능은 개발 중입니다!`);
+        }
+
+        // 회원가입 페이지로 이동
+        function showSignup() {
+            alert('회원가입 페이지로 이동합니다!');
+        }
+
+        // 입력 필드 애니메이션
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // 엔터키로 로그인
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('login-form').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
