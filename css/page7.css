@@ -1,8 +1,8 @@
 /* ======================
-   TEAM-WORKSPACE.CSS - 팀 워크스페이스 페이지 전용 스타일
+   WORKSPACE.CSS - 워크스페이스 메인 페이지 전용 스타일
 ====================== */
 
-/* body 오버라이드 (팀 워크스페이스는 다른 레이아웃) */
+/* body 오버라이드 (워크스페이스는 다른 레이아웃) */
 body {
     background-color: #f1f5f9;
     height: 100vh;
@@ -15,76 +15,6 @@ body {
     background: #f1f5f9; /* common.css의 gradient 오버라이드 */
 }
 
-/* 좌측 기능 툴바 */
-.left-toolbar {
-    width: 80px;
-    background-color: #1e293b;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
-    gap: 20px;
-}
-
-.toolbar-item {
-    width: 48px;
-    height: 48px;
-    background-color: rgba(255,255,255,0.1);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    color: white;
-    font-size: 20px;
-    position: relative;
-}
-
-.toolbar-item:hover {
-    background-color: #0ea5e9;
-    transform: scale(1.1);
-}
-
-.toolbar-item.active {
-    background-color: #0ea5e9;
-}
-
-.notification-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #ef4444;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-.toolbar-tooltip {
-    position: absolute;
-    left: 60px;
-    background-color: #1f2937;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-    z-index: 1000;
-}
-
-.toolbar-item:hover .toolbar-tooltip {
-    opacity: 1;
-}
-
 /* 사이드바 */
 .sidebar {
     width: 280px;
@@ -95,26 +25,23 @@ body {
     flex-direction: column;
 }
 
-.team-header {
+.workspace-header {
     padding: 0 20px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.team-name {
-    font-size: 20px;
+.workspace-name {
+    font-size: 18px;
     font-weight: bold;
     margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
-.team-info {
+.workspace-info {
     font-size: 14px;
     opacity: 0.8;
 }
 
-.content-section {
+.channels-section {
     padding: 20px 0;
     flex: 1;
 }
@@ -127,54 +54,66 @@ body {
     opacity: 0.9;
 }
 
-.item-list {
+.channel-list {
     list-style: none;
 }
 
-.list-item {
-    padding: 10px 20px;
-    font-size: 14px;
+.channel-item {
+    padding: 8px 20px;
+    font-size: 15px;
     cursor: pointer;
     border-radius: 0 20px 20px 0;
     margin-right: 16px;
     transition: all 0.2s;
     display: flex;
     align-items: center;
-    justify-content: space-between;
 }
 
-.list-item:hover {
+.channel-item:hover {
     background-color: rgba(255,255,255,0.1);
 }
 
-.list-item.active {
+.channel-item.active {
     background-color: #2563eb;
     font-weight: bold;
 }
 
-.item-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.channel-icon {
+    margin-right: 8px;
 }
 
-.file-icon {
+.user-section {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.user-item:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.user-avatar {
     width: 24px;
     height: 24px;
-    background-color: rgba(255,255,255,0.2);
-    border-radius: 4px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background-color: #64748b;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 12px;
+    font-weight: bold;
 }
 
-.item-meta {
-    font-size: 12px;
-    opacity: 0.7;
-}
-
-/* 메인 콘텐츠 */
+/* 메인 영역 */
 .main-content {
     flex: 1;
     display: flex;
@@ -182,179 +121,190 @@ body {
     background-color: white;
 }
 
-.content-header {
+.chat-header {
     padding: 20px;
     border-bottom: 1px solid #e2e8f0;
     background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
-.header-left h1 {
-    font-size: 24px;
+.channel-title {
+    font-size: 20px;
     font-weight: bold;
     color: #1e293b;
     margin-bottom: 4px;
 }
 
-.header-left p {
+.channel-description {
     color: #64748b;
     font-size: 14px;
 }
 
-.header-actions {
-    display: flex;
-    gap: 12px;
+.welcome-message {
+    padding: 40px;
+    text-align: center;
+    background-color: #f8fafc;
+    margin: 20px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
 }
 
-.action-btn {
-    padding: 8px 16px;
-    border: 1px solid #e2e8f0;
-    background-color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
+.welcome-icon {
+    width: 80px;
+    height: 80px;
+    background-color: #0ea5e9;
+    border-radius: 12px;
+    margin: 0 auto 20px;
     display: flex;
     align-items: center;
-    gap: 6px;
-}
-
-.action-btn.primary {
-    background-color: #0ea5e9;
+    justify-content: center;
+    font-size: 32px;
     color: white;
-    border-color: #0ea5e9;
 }
 
-.action-btn:hover {
-    background-color: #f8fafc;
+.welcome-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 8px;
 }
 
-.action-btn.primary:hover {
-    background-color: #0284c7;
+.welcome-description {
+    color: #64748b;
+    font-size: 16px;
+    line-height: 1.5;
 }
 
-/* 콘텐츠 영역 */
-.content-area {
+.chat-messages {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
 }
 
-.content-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.content-card {
-    background-color: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 20px;
-    transition: all 0.2s;
-}
-
-.content-card:hover {
-    border-color: #0ea5e9;
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
-}
-
-.card-header {
+.message {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
 }
 
-.card-icon {
-    width: 40px;
-    height: 40px;
-    background-color: #0ea5e9;
-    border-radius: 8px;
+.message-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #64748b;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 18px;
+    font-weight: bold;
 }
 
-.card-title {
-    font-size: 16px;
+.message-content {
+    flex: 1;
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.message-author {
     font-weight: bold;
     color: #1e293b;
+    margin-right: 8px;
 }
 
-.card-description {
+.message-time {
     color: #64748b;
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 16px;
+    font-size: 12px;
 }
 
-.card-footer {
+.message-text {
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* 입력 영역 */
+.message-input-container {
+    padding: 20px;
+    background-color: white;
+    border-top: 1px solid #e2e8f0;
+}
+
+.message-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.message-input:focus {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.input-toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 12px;
-    color: #64748b;
+    margin-top: 8px;
 }
 
-.status-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
+.input-actions {
+    display: flex;
+    gap: 8px;
 }
 
-.status-new {
-    background-color: #dcfce7;
-    color: #166534;
-}
-
-.status-urgent {
-    background-color: #fef2f2;
-    color: #dc2626;
-}
-
-.status-progress {
-    background-color: #dbeafe;
-    color: #1d4ed8;
-}
-
-/* 업로드 드래그 영역 */
-.upload-area {
-    border: 2px dashed #cbd5e1;
-    border-radius: 8px;
-    padding: 40px;
-    text-align: center;
-    color: #64748b;
-    transition: all 0.2s;
+.input-btn {
+    padding: 6px 8px;
+    border: none;
+    background: none;
     cursor: pointer;
+    border-radius: 4px;
+    color: #64748b;
+    font-size: 16px;
+    transition: all 0.2s;
 }
 
-.upload-area:hover {
-    border-color: #0ea5e9;
-    background-color: #f0f9ff;
+.input-btn:hover {
+    background-color: #f1f5f9;
+    color: #0ea5e9;
 }
 
-.upload-area.dragover {
-    border-color: #0ea5e9;
-    background-color: #e0f2fe;
+.send-btn {
+    padding: 8px 16px;
+    background-color: #0ea5e9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
-/* 반응형 */
-@media (max-width: 768px) {
-    .left-toolbar {
-        width: 60px;
-    }
-    
-    .sidebar {
-        width: 240px;
-    }
-    
-    .content-grid {
-        grid-template-columns: 1fr;
-    }
+.send-btn:hover {
+    background-color: #0284c7;
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }

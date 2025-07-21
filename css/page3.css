@@ -1,297 +1,318 @@
 /* ======================
-   VERIFICATION.CSS - 인증 완료 전용 스타일
+   SIGNUP.CSS - 회원가입 전용 스타일
 ====================== */
 
-/* 배경 애니메이션 */
-.bg-animation {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.floating-element {
+/* 배경 장식 요소들 (회원가입 페이지용 향상된 버전) */
+.bg-decoration {
     position: absolute;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
-    animation: float-up 8s infinite linear;
+    pointer-events: none;
 }
 
-.floating-element:nth-child(1) {
-    width: 80px;
-    height: 80px;
-    left: 10%;
-    animation-delay: 0s;
-    animation-duration: 6s;
+.bg-decoration:nth-child(1) {
+    width: 400px;
+    height: 400px;
+    top: -200px;
+    left: -200px;
+    animation: float-enhanced 8s ease-in-out infinite;
 }
 
-.floating-element:nth-child(2) {
-    width: 60px;
-    height: 60px;
-    left: 20%;
-    animation-delay: 2s;
-    animation-duration: 8s;
+.bg-decoration:nth-child(2) {
+    width: 250px;
+    height: 250px;
+    top: 10%;
+    right: -125px;
+    animation: float-enhanced 10s ease-in-out infinite reverse;
 }
 
-.floating-element:nth-child(3) {
-    width: 100px;
-    height: 100px;
-    left: 80%;
-    animation-delay: 1s;
-    animation-duration: 7s;
+.bg-decoration:nth-child(3) {
+    width: 180px;
+    height: 180px;
+    bottom: -90px;
+    left: 15%;
+    animation: float-enhanced 9s ease-in-out infinite;
 }
 
-.floating-element:nth-child(4) {
-    width: 40px;
-    height: 40px;
-    left: 70%;
-    animation-delay: 3s;
-    animation-duration: 9s;
-}
-
-.floating-element:nth-child(5) {
-    width: 120px;
-    height: 120px;
-    left: 50%;
-    animation-delay: 4s;
-    animation-duration: 10s;
-}
-
-/* 메인 컨테이너 */
-.complete-container {
+/* 회원가입 컨테이너 */
+.signup-container {
     background: white;
     border-radius: 24px;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
-    padding: 50px 40px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+    padding: 40px;
     width: 100%;
-    max-width: 480px;
+    max-width: 440px;
     position: relative;
     z-index: 10;
-    text-align: center;
     backdrop-filter: blur(10px);
 }
 
-/* 성공 아이콘 */
-.success-icon {
-    width: 120px;
-    height: 120px;
-    background: linear-gradient(135deg, #10b981, #059669);
-    border-radius: 50%;
-    margin: 0 auto 30px;
+/* 헤더 섹션 */
+.header-section {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.logo {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    border-radius: 18px;
+    margin: 0 auto 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 60px;
+    font-size: 28px;
     color: white;
-    position: relative;
-    animation: bounce-in 0.8s ease-out;
-    box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
 }
 
-.success-icon::before {
-    content: '';
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    border: 3px solid rgba(16, 185, 129, 0.3);
-    border-radius: 50%;
-    animation: pulse-ring 2s infinite;
-}
-
-/* 텍스트 */
-.title {
-    font-size: 32px;
+.welcome-text {
+    font-size: 26px;
     font-weight: bold;
     color: #1e293b;
-    margin-bottom: 15px;
-    animation: slide-up 0.6s ease-out 0.2s both;
-}
-
-.subtitle {
-    font-size: 18px;
-    color: #64748b;
-    line-height: 1.6;
-    margin-bottom: 35px;
-    animation: slide-up 0.6s ease-out 0.4s both;
-}
-
-/* 이메일 정보 */
-.email-info {
-    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-    border: 2px solid #bae6fd;
-    border-radius: 16px;
-    padding: 25px;
-    margin-bottom: 30px;
-    animation: slide-up 0.6s ease-out 0.6s both;
-}
-
-.email-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
-}
-
-.email-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #0369a1;
     margin-bottom: 8px;
 }
 
-.email-address {
-    font-size: 16px;
-    color: #0284c7;
-    font-weight: 600;
-    background: white;
-    padding: 8px 16px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #bae6fd;
-}
-
-.email-note {
-    font-size: 14px;
+.subtitle {
     color: #64748b;
+    font-size: 15px;
     line-height: 1.5;
 }
 
-/* 단계 안내 */
-.steps-guide {
-    text-align: left;
-    margin-bottom: 30px;
-    animation: slide-up 0.6s ease-out 0.8s both;
+/* 진행 표시기 */
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: #e5e7eb;
+    border-radius: 2px;
+    margin: 25px 0;
+    overflow: hidden;
 }
 
-.steps-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #1e293b;
-    margin-bottom: 15px;
-    text-align: center;
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0ea5e9, #2563eb);
+    border-radius: 2px;
+    width: 33%;
+    transition: width 0.5s ease;
 }
 
-.step-item {
+.step-indicators {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 12px;
-    padding: 12px;
-    background: #f8fafc;
-    border-radius: 10px;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.step.active {
+    color: #0ea5e9;
+    font-weight: 600;
+}
+
+.step.completed {
+    color: #10b981;
+}
+
+/* 폼 스타일 */
+.signup-form {
+    margin-top: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.required {
+    color: #ef4444;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #0ea5e9;
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+}
+
+.form-input.error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.form-input.success {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+.form-input::placeholder {
+    color: #9ca3af;
+}
+
+/* 비밀번호 강도 표시기 */
+.password-strength {
+    margin-top: 8px;
+    display: none;
+}
+
+.strength-bar {
+    height: 4px;
+    background-color: #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.strength-fill {
+    height: 100%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.strength-text {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.strength-weak {
+    background-color: #ef4444;
+    color: #ef4444;
+}
+
+.strength-medium {
+    background-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.strength-strong {
+    background-color: #10b981;
+    color: #10b981;
+}
+
+/* 유효성 검사 메시지 */
+.validation-message {
+    font-size: 12px;
+    margin-top: 6px;
+    display: none;
+}
+
+.validation-message.error {
+    color: #ef4444;
+    display: block;
+}
+
+.validation-message.success {
+    color: #10b981;
+    display: block;
+}
+
+/* 약관 동의 */
+.terms-section {
+    margin: 25px 0;
+    padding: 20px;
+    background-color: #f8fafc;
+    border-radius: 12px;
     border: 1px solid #e2e8f0;
 }
 
-.step-number {
-    width: 24px;
-    height: 24px;
-    background: #0ea5e9;
-    color: white;
-    border-radius: 50%;
+.terms-item {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-    flex-shrink: 0;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.terms-item:last-child {
+    margin-bottom: 0;
+}
+
+.checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #0ea5e9;
     margin-top: 2px;
 }
 
-.step-text {
+.terms-text {
     font-size: 14px;
     color: #374151;
     line-height: 1.4;
 }
 
-/* 액션 버튼들 */
-.action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    animation: slide-up 0.6s ease-out 1.0s both;
+.terms-link {
+    color: #0ea5e9;
+    text-decoration: none;
+    font-weight: 500;
 }
 
-.btn {
-    padding: 16px 24px;
+.terms-link:hover {
+    text-decoration: underline;
+}
+
+.terms-required {
+    font-weight: 600;
+}
+
+/* 회원가입 버튼 */
+.signup-button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    color: white;
+    border: none;
     border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: none;
     position: relative;
     overflow: hidden;
+    margin-top: 10px;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #0ea5e9, #2563eb);
-    color: white;
-}
-
-.btn-primary:hover {
+.signup-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 15px 35px rgba(14, 165, 233, 0.4);
 }
 
-.btn-secondary {
-    background: white;
-    color: #64748b;
-    border: 2px solid #e5e7eb;
+.signup-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
-.btn-secondary:hover {
-    border-color: #0ea5e9;
-    color: #0ea5e9;
-    background: #f0f9ff;
-}
-
-/* 도움말 섹션 */
-.help-section {
-    margin-top: 30px;
-    padding-top: 25px;
-    border-top: 1px solid #e5e7eb;
-    animation: slide-up 0.6s ease-out 1.2s both;
-}
-
-.help-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #64748b;
-    margin-bottom: 12px;
-}
-
-.help-links {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.help-link {
-    color: #0ea5e9;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: color 0.2s ease;
-}
-
-.help-link:hover {
-    color: #0284c7;
-    text-decoration: underline;
-}
-
-/* 타이머 */
-.resend-timer {
-    margin-top: 15px;
-    font-size: 14px;
-    color: #64748b;
-}
-
-.timer-text {
-    font-weight: 600;
-    color: #0ea5e9;
-}
-
-/* 로딩 스피너 */
 .loading-spinner {
     display: none;
     width: 20px;
@@ -301,4 +322,38 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-right: 8px;
+}
+
+/* 로그인 링크 */
+.login-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.login-link a {
+    color: #0ea5e9;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* 성공 메시지 */
+.success-message {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.success-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
 }
