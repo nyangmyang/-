@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -35,7 +34,7 @@
             </div>
             <div class="step" id="step2">
                 <span>2️⃣</span>
-                <span>계정 설정</span>
+                <span>워크스페이스</span>
             </div>
             <div class="step" id="step3">
                 <span>3️⃣</span>
@@ -50,33 +49,27 @@
             <p>이메일 인증 후 로그인하실 수 있습니다.</p>
         </div>
 
+        <!-- 에러 메시지 -->
+        <div class="error-message" id="error-message" style="display: none; background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 20px;">
+            에러가 발생했습니다.
+        </div>
+
         <!-- 회원가입 폼 -->
         <form class="signup-form" id="signup-form">
             <!-- 1단계: 기본 정보 -->
             <div class="form-step" id="form-step-1">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="firstName">
-                            이름 <span class="required">*</span>
-                        </label>
-                        <input 
-                            type="text" 
-                            id="firstName" 
-                            class="form-input" 
-                            placeholder="홍길동"
-                            required
-                        >
-                        <div class="validation-message" id="firstName-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="lastName">성</label>
-                        <input 
-                            type="text" 
-                            id="lastName" 
-                            class="form-input" 
-                            placeholder="김"
-                        >
-                    </div>
+                <div class="form-group">
+                    <label class="form-label" for="name">
+                        이름 <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        class="form-input" 
+                        placeholder="홍길동"
+                        required
+                    >
+                    <div class="validation-message" id="name-error"></div>
                 </div>
 
                 <div class="form-group">
@@ -93,33 +86,6 @@
                     <div class="validation-message" id="email-error"></div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="company">
-                        회사명 <span class="required">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="company" 
-                        class="form-input" 
-                        placeholder="회사명을 입력하세요"
-                        required
-                    >
-                    <div class="validation-message" id="company-error"></div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="position">직책</label>
-                    <input 
-                        type="text" 
-                        id="position" 
-                        class="form-input" 
-                        placeholder="개발자, 디자이너, 기획자 등"
-                    >
-                </div>
-            </div>
-
-            <!-- 2단계: 계정 설정 -->
-            <div class="form-step" id="form-step-2" style="display: none;">
                 <div class="form-group">
                     <label class="form-label" for="password">
                         비밀번호 <span class="required">*</span>
@@ -154,6 +120,22 @@
                     <div class="validation-message" id="confirmPassword-error"></div>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label" for="role_id">
+                        직급 <span class="required">*</span>
+                    </label>
+                    <select id="role_id" class="form-input" required>
+                        <option value="">직급을 선택하세요</option>
+                        <option value="1">사원</option>
+                        <option value="2">대리</option>
+                        <option value="3">과장</option>
+                        <option value="4">팀장</option>
+                        <option value="5">부장</option>
+                        <option value="6">이사</option>
+                    </select>
+                    <div class="validation-message" id="role-error"></div>
+                </div>
+
                 <div class="terms-section">
                     <div class="terms-item">
                         <input type="checkbox" class="checkbox" id="terms-service" required>
@@ -176,6 +158,64 @@
                 </div>
             </div>
 
+            <!-- 2단계: 워크스페이스 설정 -->
+            <div class="form-step" id="form-step-2" style="display: none;">
+                <div style="margin-bottom: 25px;">
+                    <h3 style="font-size: 18px; margin-bottom: 15px; color: #1e293b;">워크스페이스 설정</h3>
+                    <p style="color: #64748b; font-size: 14px;">새 워크스페이스를 생성하거나 초대 코드로 기존 워크스페이스에 참여하세요</p>
+                </div>
+
+                <div class="workspace-options" style="margin-bottom: 25px;">
+                    <div class="workspace-option" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 15px; cursor: pointer; transition: all 0.3s ease;" onclick="selectWorkspaceOption('create')">
+                        <div class="option-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                            <div class="option-icon" style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: linear-gradient(135deg, #0ea5e9, #2563eb); color: white;">➕</div>
+                            <div class="option-title" style="font-size: 16px; font-weight: bold; color: #1e293b;">새 워크스페이스 만들기</div>
+                        </div>
+                        <div class="option-description" style="color: #64748b; font-size: 14px; line-height: 1.4;">
+                            새로운 팀을 만들고 동료들을 초대하여 함께 협업하세요.
+                        </div>
+                    </div>
+
+                    <div class="workspace-option" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease;" onclick="selectWorkspaceOption('join')">
+                        <div class="option-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                            <div class="option-icon" style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: linear-gradient(135deg, #0ea5e9, #2563eb); color: white;">👥</div>
+                            <div class="option-title" style="font-size: 16px; font-weight: bold; color: #1e293b;">기존 워크스페이스 참여</div>
+                        </div>
+                        <div class="option-description" style="color: #64748b; font-size: 14px; line-height: 1.4;">
+                            초대 코드를 통해 기존 팀에 참여하세요.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 새 워크스페이스 생성 필드 -->
+                <div class="form-group" id="workspace-name-group">
+                    <label class="form-label" for="workspace_name">
+                        워크스페이스 이름 <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="workspace_name" 
+                        class="form-input" 
+                        placeholder="회사명 또는 팀명을 입력하세요"
+                    >
+                    <div class="validation-message" id="workspace-error"></div>
+                </div>
+
+                <!-- 초대 코드 입력 필드 -->
+                <div class="form-group" id="invite-code-group" style="display: none;">
+                    <label class="form-label" for="invite_code">
+                        초대 코드 <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="invite_code" 
+                        class="form-input" 
+                        placeholder="초대 코드를 입력하세요 (예: XYZ123)"
+                    >
+                    <div class="validation-message" id="invite-error"></div>
+                </div>
+            </div>
+
             <button type="submit" class="signup-button" id="signup-btn" disabled>
                 <div class="loading-spinner" id="loading-spinner"></div>
                 <span id="btn-text">다음 단계</span>
@@ -189,37 +229,76 @@
     </div>
 
     <script>
+        // ============================
+        // API 설정
+        // ============================
+        const API_BASE_URL = 'http://localhost:8000';
+
         let currentStep = 1;
-        const totalSteps = 3;
+        let workspaceOption = 'create'; // 'create' 또는 'join'
 
-        // 폼 유효성 검사 및 단계 관리
-        const form = document.getElementById('signup-form');
-        const progressFill = document.getElementById('progress-fill');
-        const signupBtn = document.getElementById('signup-btn');
-        const btnText = document.getElementById('btn-text');
+        // ============================
+        // API 호출 함수들
+        // ============================
+        async function signupUser(userData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
 
-        // 입력 필드 실시간 유효성 검사
-        document.getElementById('firstName').addEventListener('input', validateName);
-        document.getElementById('email').addEventListener('input', validateEmail);
-        document.getElementById('company').addEventListener('input', validateCompany);
-        document.getElementById('password').addEventListener('input', validatePassword);
-        document.getElementById('confirmPassword').addEventListener('input', validatePasswordConfirm);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    return { success: true, data };
+                } else {
+                    return { success: false, error: data.detail || '회원가입에 실패했습니다.' };
+                }
+            } catch (error) {
+                console.error('Signup API Error:', error);
+                return { success: false, error: '서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.' };
+            }
+        }
 
+        async function requestEmailVerification(email) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/request-verification`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                return response.ok;
+            } catch (error) {
+                console.error('Email verification request failed:', error);
+                return false;
+            }
+        }
+
+        // ============================
+        // 유효성 검사 함수들
+        // ============================
         function validateName() {
-            const firstName = document.getElementById('firstName');
-            const error = document.getElementById('firstName-error');
+            const name = document.getElementById('name');
+            const error = document.getElementById('name-error');
             
-            if (firstName.value.length < 2) {
-                firstName.classList.add('error');
-                firstName.classList.remove('success');
+            if (name.value.length < 2) {
+                name.classList.add('error');
+                name.classList.remove('success');
                 error.textContent = '이름은 2자 이상이어야 합니다.';
                 error.className = 'validation-message error';
+                return false;
             } else {
-                firstName.classList.remove('error');
-                firstName.classList.add('success');
+                name.classList.remove('error');
+                name.classList.add('success');
                 error.className = 'validation-message';
+                return true;
             }
-            checkStep1Validity();
         }
 
         function validateEmail() {
@@ -232,30 +311,14 @@
                 email.classList.remove('success');
                 error.textContent = '유효한 이메일 주소를 입력하세요.';
                 error.className = 'validation-message error';
+                return false;
             } else {
                 email.classList.remove('error');
                 email.classList.add('success');
                 error.textContent = '사용 가능한 이메일입니다.';
                 error.className = 'validation-message success';
+                return true;
             }
-            checkStep1Validity();
-        }
-
-        function validateCompany() {
-            const company = document.getElementById('company');
-            const error = document.getElementById('company-error');
-            
-            if (company.value.length < 2) {
-                company.classList.add('error');
-                company.classList.remove('success');
-                error.textContent = '회사명을 입력하세요.';
-                error.className = 'validation-message error';
-            } else {
-                company.classList.remove('error');
-                company.classList.add('success');
-                error.className = 'validation-message';
-            }
-            checkStep1Validity();
         }
 
         function validatePassword() {
@@ -269,14 +332,15 @@
             
             const value = password.value;
             let strength = 0;
-            let strengthClass = '';
-            let strengthLabel = '';
             
             if (value.length >= 8) strength++;
             if (/[a-z]/.test(value)) strength++;
             if (/[A-Z]/.test(value)) strength++;
             if (/[0-9]/.test(value)) strength++;
             if (/[^a-zA-Z0-9]/.test(value)) strength++;
+            
+            let strengthClass = '';
+            let strengthLabel = '';
             
             if (strength < 2) {
                 strengthClass = 'strength-weak';
@@ -296,19 +360,18 @@
             strengthText.textContent = `비밀번호 강도: ${strengthLabel}`;
             strengthText.className = `strength-text ${strengthClass}`;
             
-            if (value.length < 8) {
+            if (value.length < 4) { // API 명세서에 맞게 최소 길이 조정
                 password.classList.add('error');
                 password.classList.remove('success');
-                error.textContent = '비밀번호는 8자 이상이어야 합니다.';
+                error.textContent = '비밀번호는 4자 이상이어야 합니다.';
                 error.className = 'validation-message error';
+                return false;
             } else {
                 password.classList.remove('error');
                 password.classList.add('success');
                 error.className = 'validation-message';
+                return true;
             }
-            
-            validatePasswordConfirm();
-            checkStep2Validity();
         }
 
         function validatePasswordConfirm() {
@@ -321,45 +384,82 @@
                 confirmPassword.classList.remove('success');
                 error.textContent = '비밀번호가 일치하지 않습니다.';
                 error.className = 'validation-message error';
+                return false;
             } else if (confirmPassword.value) {
                 confirmPassword.classList.remove('error');
                 confirmPassword.classList.add('success');
                 error.textContent = '비밀번호가 일치합니다.';
                 error.className = 'validation-message success';
+                return true;
             }
-            checkStep2Validity();
+            return false;
         }
 
         function checkStep1Validity() {
-            const firstName = document.getElementById('firstName').value.length >= 2;
-            const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value);
-            const company = document.getElementById('company').value.length >= 2;
-            
-            signupBtn.disabled = !(firstName && email && company);
-        }
-
-        function checkStep2Validity() {
-            const password = document.getElementById('password').value.length >= 8;
-            const confirmPassword = document.getElementById('confirmPassword').value === document.getElementById('password').value;
+            const name = validateName();
+            const email = validateEmail();
+            const password = validatePassword();
+            const confirmPassword = validatePasswordConfirm();
+            const role = document.getElementById('role_id').value !== '';
             const termsService = document.getElementById('terms-service').checked;
             const termsPrivacy = document.getElementById('terms-privacy').checked;
             
-            signupBtn.disabled = !(password && confirmPassword && termsService && termsPrivacy);
+            const isValid = name && email && password && confirmPassword && role && termsService && termsPrivacy;
+            document.getElementById('signup-btn').disabled = !isValid;
+            return isValid;
         }
 
-        // 폼 제출 처리
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+        function checkStep2Validity() {
+            let isValid = false;
             
-            if (currentStep === 1) {
-                // 1단계에서 2단계로
-                nextStep();
-            } else if (currentStep === 2) {
-                // 최종 회원가입 처리
-                processSignup();
+            if (workspaceOption === 'create') {
+                const workspaceName = document.getElementById('workspace_name').value.trim();
+                isValid = workspaceName.length >= 2;
+            } else if (workspaceOption === 'join') {
+                const inviteCode = document.getElementById('invite_code').value.trim();
+                isValid = inviteCode.length >= 3;
             }
-        });
+            
+            document.getElementById('signup-btn').disabled = !isValid;
+            return isValid;
+        }
 
+        // ============================
+        // 워크스페이스 옵션 선택
+        // ============================
+        function selectWorkspaceOption(option) {
+            workspaceOption = option;
+            
+            // 모든 옵션 비활성화
+            document.querySelectorAll('.workspace-option').forEach(opt => {
+                opt.style.borderColor = '#e5e7eb';
+                opt.style.backgroundColor = 'white';
+            });
+            
+            // 선택된 옵션 활성화
+            event.target.closest('.workspace-option').style.borderColor = '#0ea5e9';
+            event.target.closest('.workspace-option').style.backgroundColor = '#f0f9ff';
+            
+            // 필드 표시/숨김
+            const workspaceGroup = document.getElementById('workspace-name-group');
+            const inviteGroup = document.getElementById('invite-code-group');
+            
+            if (option === 'create') {
+                workspaceGroup.style.display = 'block';
+                inviteGroup.style.display = 'none';
+                document.getElementById('invite_code').value = '';
+            } else {
+                workspaceGroup.style.display = 'none';
+                inviteGroup.style.display = 'block';
+                document.getElementById('workspace_name').value = '';
+            }
+            
+            checkStep2Validity();
+        }
+
+        // ============================
+        // 폼 단계 관리
+        // ============================
         function nextStep() {
             currentStep = 2;
             
@@ -367,51 +467,173 @@
             document.getElementById('form-step-1').style.display = 'none';
             document.getElementById('form-step-2').style.display = 'block';
             
-            progressFill.style.width = '66%';
+            document.getElementById('progress-fill').style.width = '66%';
             
             document.getElementById('step1').classList.remove('active');
             document.getElementById('step1').classList.add('completed');
             document.getElementById('step2').classList.add('active');
             
-            btnText.textContent = '회원가입 완료';
-            signupBtn.disabled = true;
+            document.getElementById('btn-text').textContent = '회원가입 완료';
+            document.getElementById('signup-btn').disabled = true;
+            
+            // 기본값으로 새 워크스페이스 생성 선택
+            selectWorkspaceOption('create');
         }
 
-        function processSignup() {
+        async function processSignup() {
             const spinner = document.getElementById('loading-spinner');
+            const btnText = document.getElementById('btn-text');
+            const signupBtn = document.getElementById('signup-btn');
+            const errorMessage = document.getElementById('error-message');
             
             // 로딩 상태
             signupBtn.disabled = true;
             btnText.textContent = '처리중...';
             spinner.style.display = 'inline-block';
+            errorMessage.style.display = 'none';
             
-            // 가짜 처리 (실제로는 서버에 요청)
-            setTimeout(() => {
-                // 성공 상태
-                currentStep = 3;
-                progressFill.style.width = '100%';
+            // 폼 데이터 수집
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value,
+                role_id: parseInt(document.getElementById('role_id').value)
+            };
+            
+            // 워크스페이스 설정에 따라 추가 데이터
+            if (workspaceOption === 'create') {
+                formData.workspace_name = document.getElementById('workspace_name').value.trim();
+            } else {
+                formData.invite_code = document.getElementById('invite_code').value.trim();
+            }
+            
+            try {
+                // 🟢 실제 API 호출
+                const result = await signupUser(formData);
                 
-                document.getElementById('step2').classList.remove('active');
-                document.getElementById('step2').classList.add('completed');
-                document.getElementById('step3').classList.add('completed');
+                if (result.success) {
+                    // 성공: 이메일 인증 요청
+                    await requestEmailVerification(formData.email);
+                    
+                    // 성공 UI 표시
+                    currentStep = 3;
+                    document.getElementById('progress-fill').style.width = '100%';
+                    
+                    document.getElementById('step2').classList.remove('active');
+                    document.getElementById('step2').classList.add('completed');
+                    document.getElementById('step3').classList.add('completed');
+                    
+                    document.getElementById('form-step-2').style.display = 'none';
+                    document.getElementById('success-message').style.display = 'block';
+                    signupBtn.style.display = 'none';
+                    
+                    // 2초 후 이메일 인증 페이지로 이동
+                    setTimeout(() => {
+                        window.location.href = 'page3_signup_complete.html';
+                    }, 2000);
+                } else {
+                    // 실패: 에러 메시지 표시
+                    errorMessage.textContent = result.error;
+                    errorMessage.style.display = 'block';
+                    
+                    // 로딩 상태 원복
+                    signupBtn.disabled = false;
+                    btnText.textContent = '회원가입 완료';
+                    spinner.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Signup process error:', error);
+                errorMessage.textContent = '회원가입 중 오류가 발생했습니다. 다시 시도해주세요.';
+                errorMessage.style.display = 'block';
                 
-                document.getElementById('form-step-2').style.display = 'none';
-                document.getElementById('success-message').style.display = 'block';
-                signupBtn.style.display = 'none';
-                
-                setTimeout(() => {
-                    alert('인증 이메일이 발송되었습니다!');
-                }, 1000);
-            }, 2000);
+                // 로딩 상태 원복
+                signupBtn.disabled = false;
+                btnText.textContent = '회원가입 완료';
+                spinner.style.display = 'none';
+            }
         }
+
+        // ============================
+        // 이벤트 리스너들
+        // ============================
+        
+        // 입력 필드 실시간 검증
+        document.getElementById('name').addEventListener('input', () => {
+            validateName();
+            checkStep1Validity();
+        });
+        
+        document.getElementById('email').addEventListener('input', () => {
+            validateEmail();
+            checkStep1Validity();
+        });
+        
+        document.getElementById('password').addEventListener('input', () => {
+            validatePassword();
+            validatePasswordConfirm(); // 비밀번호 변경시 확인도 재검증
+            checkStep1Validity();
+        });
+        
+        document.getElementById('confirmPassword').addEventListener('input', () => {
+            validatePasswordConfirm();
+            checkStep1Validity();
+        });
+        
+        document.getElementById('role_id').addEventListener('change', checkStep1Validity);
+        document.getElementById('terms-service').addEventListener('change', checkStep1Validity);
+        document.getElementById('terms-privacy').addEventListener('change', checkStep1Validity);
+        
+        // 2단계 입력 필드들
+        document.getElementById('workspace_name').addEventListener('input', checkStep2Validity);
+        document.getElementById('invite_code').addEventListener('input', checkStep2Validity);
+
+        // 폼 제출 처리
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (currentStep === 1) {
+                if (checkStep1Validity()) {
+                    nextStep();
+                }
+            } else if (currentStep === 2) {
+                if (checkStep2Validity()) {
+                    processSignup();
+                }
+            }
+        });
 
         function goToLogin() {
-            alert('로그인 페이지로 이동합니다!');
+            window.location.href = 'page1_login.html';
         }
 
-        // 약관 체크박스 이벤트
-        document.getElementById('terms-service').addEventListener('change', checkStep2Validity);
-        document.getElementById('terms-privacy').addEventListener('change', checkStep2Validity);
+        // 초기 상태 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            checkStep1Validity();
+        });
+
+        // 개발자 도구용 디버깅
+        window.debugSignup = {
+            fillTestData: () => {
+                document.getElementById('name').value = '홍길동';
+                document.getElementById('email').value = 'test@example.com';
+                document.getElementById('password').value = 'test1234';
+                document.getElementById('confirmPassword').value = 'test1234';
+                document.getElementById('role_id').value = '2';
+                document.getElementById('terms-service').checked = true;
+                document.getElementById('terms-privacy').checked = true;
+                checkStep1Validity();
+                console.log('테스트 데이터가 입력되었습니다.');
+            },
+            testSignup: () => signupUser({
+                name: '테스트유저',
+                email: 'test@example.com',
+                password: 'test1234',
+                workspace_name: '테스트회사',
+                role_id: 2
+            })
+        };
+        
+        console.log('🔧 개발자 도구에서 debugSignup.fillTestData() 또는 debugSignup.testSignup()을 사용하여 테스트할 수 있습니다.');
     </script>
 </body>
 </html>
