@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>워크스페이스 선택 - WorkSpace</title>
+
+  <!-- CSS 파일들 임포트 -->
+  <link rel="stylesheet" href="../../css/common.css" />
+  <link rel="stylesheet" href="../../css/workspace-select.css" />
+</head>
+<body>
+
+  <!-- 배경 장식 -->
+  <div class="bg-decoration"></div>
+  <div class="bg-decoration"></div>
+  <div class="bg-decoration"></div>
+
+  <div class="settings-container">
+    <!-- 헤더 -->
+    <div class="header-section">
+      <div class="settings-badge">⚙️ 설정</div>
+      <div class="logo">🌊</div>
+      <h1 class="welcome-text">워크스페이스 설정</h1>
+      <p class="subtitle">
+        워크스페이스의 모든 설정을<br />
+        관리하고 커스터마이징하세요
+      </p>
+    </div>
+
+    <!-- 워크스페이스 정보 -->
+    <div class="workspace-info">
+      <div class="workspace-icon">🚀</div>
+      <div class="workspace-details">
+        <div class="workspace-name">스타트업팀</div>
+        <div class="workspace-meta">생성일: 2023년 6월 1일 • 관리자: 정진섭</div>
+        <div class="workspace-id">ID: workspace_12345</div>
+      </div>
+    </div>
+
+    <!-- 탭 섹션 -->
+    <div class="tab-section">
+      <!-- 탭 버튼 -->
+      <div class="tab-buttons">
+        <button class="tab-button active" onclick="switchTab('general')" id="general-tab">일반 설정</button>
+        <button class="tab-button" onclick="switchTab('permissions')" id="permissions-tab">권한 관리</button>
+        <button class="tab-button" onclick="switchTab('integrations')" id="integrations-tab">통합 설정</button>
+        <button class="tab-button" onclick="switchTab('security')" id="security-tab">보안 설정</button>
+        <button class="tab-button" onclick="switchTab('danger')" id="danger-tab">위험 구역</button>
+      </div>
+
+      <!-- 일반 설정 탭 -->
+      <div class="tab-content active" id="general-content">
+        <!-- 기본 정보 -->
+        <div class="settings-section">
+          <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, #0ea5e9, #2563eb);">ℹ️</div>
+            <div class="section-title">기본 정보</div>
+          </div>
+          <div class="section-description">워크스페이스의 기본 정보를 수정할 수 있습니다.</div>
+
+          <div class="form-group">
+            <label class="form-label">워크스페이스 이름</label>
+            <input type="text" class="form-input" value="스타트업팀" id="workspace-name" />
+            <div class="form-help">워크스페이스 이름은 모든 멤버에게 표시됩니다.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">설명</label>
+            <textarea
+              class="form-textarea"
+              id="workspace-description"
+              placeholder="워크스페이스에 대한 설명을 입력하세요"
+            >혁신적인 제품을 만드는 스타트업 팀입니다. 함께 성장하고 배우며 최고의 서비스를 만들어 갑니다.</textarea>
+            <div class="form-help">워크스페이스의 목적과 문화를 설명해주세요.</div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary">취소</button>
+            <button class="btn btn-primary" onclick="saveGeneralSettings()">
+              <div class="loading-spinner" id="general-spinner"></div>
+              저장
+            </button>
+          </div>
+        </div>
+
+        <!-- 초대 코드 -->
+        <div class="settings-section">
+          <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, #10b981, #059669);">🔗</div>
+            <div class="section-title">초대 링크</div>
+          </div>
+          <div class="section-description">새로운 멤버를 초대할 수 있는 링크를 관리합니다.</div>
+
+          <div class="invite-code-section">
+            <div class="invite-code-header">
+              <div class="invite-code-title">현재 초대 코드</div>
+              <button class="btn btn-secondary" onclick="regenerateInviteCode()">새로 생성</button>
+            </div>
+            <div class="invite-code-display">
+              <input type="text" class="invite-code" value="STARTUP2025" readonly id="current-invite-code" />
+              <button class="copy-btn" onclick="copyInviteCode()">📋 복사</button>
+            </div>
+          </div>
+
+          <div class="toggle-group">
+            <div class="toggle-info">
+              <div class="toggle-label">초대 링크 활성화</div>
+              <div class="toggle-description">비활성화하면 새로운 멤버가 워크스페이스에 참여할 수 없습니다.</div>
+            </div>
+            <div class="toggle-switch active" onclick="toggleInviteLink(this)"></div>
+          </div>
+        </div>
+
+        <!-- 통계 -->
+        <div class="settings-section">
+          <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">📊</div>
+            <div class="section-title">워크스페이스 통계</div>
+          </div>
+          <div class="section-description">현재 워크스페이스의 활동 통계를 확인할 수 있습니다.</div>
+
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number">24</div><div class="stat-label">총 멤버</div></div>
+            <div class="stat-card"><div class="stat-number">8</div><div class="stat-label">채널 수</div></div>
+            <div class="stat-card"><div class="stat-number">1,234</div><div class="stat-label">총 메시지</div></div>
+            <div class="stat-card"><div class="stat-number">89</div><div class="stat-label">파일 수</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 권한 관리 탭 -->
+      <div class="tab-content" id="permissions-content">
+        <div class="settings-section">
+          <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🔑</div>
+            <div class="section-title">멤버 권한</div>
+          </div>
+          <div class="section-description">워크스페이스 멤버들의 권한을 설정합니다.</div>
+
+          <div class="toggle-group">
+            <div class="toggle-info">
+              <div class="toggle-label">채널 생성 권한</div>
+              <div class="toggle-description">모든 멤버가 새로운 채널을 생성할 수 있습니다.</div>
+            </div>
+            <div class="toggle-switch active" onclick="toggleChannelCreation(this)"></div>
+          </div>
+
+          <div class="toggle-group">
+            <div class="toggle-info">
+              <div class="toggle-label">파일 업로드 권한</div>
+              <div class="toggle-description">모든 멤버가 파일을 업로드할 수 있습니다.</div>
+            </div>
+            <div class="toggle-switch active" onclick="toggleFileUpload(this)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 통합 설정 탭 -->
+      <div class="tab-content" id="integrations-content">
+        <div class="settings-section">
+          <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, #ec4899, #db2777);">🔌</div>
+            <div class="section-title">통합 설정</div>
+          </div>
+          <div class="section-description">슬랙, GitHub, Google 계정 등의 외부 서비스를 워크스페이스와 연동할 수 있습니다.</div>
+        </div>
+      </div>
+
+      <!-- 보안 설정 탭 -->
+      <div class="tab-content" id="security-content">
+        <div class="settings-section">
+          <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, #f43f5e, #e11d48);">🛡️</div>
+            <div class="section-title">보안 설정</div>
+          </div>
+          <div class="section-description">이중 인증, 비밀번호 정책 등을 설정할 수 있습니다.</div>
+        </div>
+      </div>
+
+      <!-- 위험구역 탭 -->
+      <div class="tab-content" id="danger-content">
+        <div class="settings-section">
+          <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">⚠️</div>
+            <div class="section-title">위험 구역</div>
+          </div>
+          <div class="section-description">워크스페이스 삭제와 같은 위험한 작업을 진행할 수 있습니다.</div>
+
+          <div class="btn-group">
+            <button class="btn btn-danger" onclick="deleteWorkspace()">삭제하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 자바스크립트 -->
+  <script>
+    function switchTab(tabId) {
+      const tabs = document.querySelectorAll('.tab-button');
+      const contents = document.querySelectorAll('.tab-content');
+
+      tabs.forEach(tab => tab.classList.remove('active'));
+      contents.forEach(content => content.classList.remove('active'));
+
+      document.getElementById(`${tabId}-tab`).classList.add('active');
+      document.getElementById(`${tabId}-content`).classList.add('active');
+    }
+
+    function toggleInviteLink(el) {
+      el.classList.toggle('active');
+    }
+
+    function toggleChannelCreation(el) {
+      el.classList.toggle('active');
+    }
+
+    function toggleFileUpload(el) {
+      el.classList.toggle('active');
+    }
+
+    function saveGeneralSettings() {
+      const spinner = document.getElementById('general-spinner');
+      spinner.classList.add('loading');
+      setTimeout(() => {
+        spinner.classList.remove('loading');
+        alert("저장 완료!");
+      }, 1000);
+    }
+
+    function regenerateInviteCode() {
+      const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+      document.getElementById('current-invite-code').value = code;
+    }
+
+    function copyInviteCode() {
+      const input = document.getElementById('current-invite-code');
+      input.select();
+      document.execCommand('copy');
+      alert("초대 코드가 복사되었습니다.");
+    }
+
+    function deleteWorkspace() {
+      if (confirm("정말로 이 워크스페이스를 삭제하시겠습니까? 되돌릴 수 없습니다.")) {
+        alert("삭제되었습니다.");
+        // 실제 삭제 로직은 서버 연동 필요
+      }
+    }
+  </script>
+</body>
+</html>

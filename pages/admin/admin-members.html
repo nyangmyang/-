@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지 - 회원 관리 </title>
+    
+    <!-- CSS 파일들 임포트 -->
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/admin-members.css">
+</head>
+<body>
+    <!-- 배경 장식 -->
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+
+    <div class="admin-container">
+        <!-- 헤더 -->
+        <div class="header-section">
+            <div class="admin-badge">👑 관리자</div>
+            <div class="logo">🌊</div>
+            <h1 class="welcome-text">멤버 관리</h1>
+            <p class="subtitle">워크스페이스 멤버들의 가입 승인과<br>권한 관리를 수행하세요</p>
+        </div>
+
+        <!-- 워크스페이스 정보 -->
+        <div class="workspace-info">
+            <div class="workspace-icon">🚀</div>
+            <div class="workspace-details">
+                <div class="workspace-name">스타트업팀</div>
+                <div class="workspace-meta">총 24명의 멤버 • 3명 승인 대기 중</div>
+            </div>
+        </div>
+
+        <!-- 통계 섹션 -->
+        <div class="stats-section">
+            <div class="section-title">
+                📊 멤버 현황
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #0ea5e9, #2563eb);">👥</div>
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">전체 멤버</div>
+                    <div class="stat-change positive">+3 이번 주</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">⏳</div>
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">승인 대기</div>
+                    <div class="stat-change neutral">새 요청</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">✅</div>
+                    <div class="stat-number">21</div>
+                    <div class="stat-label">활성 멤버</div>
+                    <div class="stat-change positive">87.5%</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🚫</div>
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">정지된 멤버</div>
+                    <div class="stat-change neutral">변화 없음</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 탭 섹션 -->
+        <div class="tab-section">
+            <div class="tab-buttons">
+                <button class="tab-button" onclick="switchTab('pending')" id="pending-tab">
+                    승인 대기
+                    <span class="tab-badge">3</span>
+                </button>
+                <button class="tab-button active" onclick="switchTab('active')" id="active-tab">
+                    활성 멤버
+                </button>
+                <button class="tab-button" onclick="switchTab('suspended')" id="suspended-tab">
+                    정지된 멤버
+                </button>
+            </div>
+
+            <!-- 승인 대기 탭 -->
+            <div class="tab-content" id="pending-content">
+                <div class="content-header">
+                    <input type="text" class="search-input" placeholder="이름, 이메일로 검색..." id="pending-search">
+                    <select class="filter-select" id="pending-filter">
+                        <option value="all">모든 요청</option>
+                        <option value="recent">최근 요청</option>
+                        <option value="old">오래된 요청</option>
+                    </select>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="inviteMembers()">
+                            ➕ 멤버 초대
+                        </button>
+                    </div>
+                </div>
+
+                <div class="members-grid" id="pending-list">
+                    <!-- 승인 대기 멤버들이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+
+            <!-- 활성 멤버 탭 -->
+            <div class="tab-content active" id="active-content">
+                <div class="content-header">
+                    <input type="text" class="search-input" placeholder="이름, 이메일로 검색..." id="active-search">
+                    <select class="filter-select" id="active-filter">
+                        <option value="all">모든 멤버</option>
+                        <option value="admin">관리자</option>
+                        <option value="member">일반 멤버</option>
+                        <option value="contractor">계약직</option>
+                    </select>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="exportMembers()">
+                            📤 내보내기
+                        </button>
+                        <button class="btn btn-primary" onclick="inviteMembers()">
+                            ➕ 멤버 초대
+                        </button>
+                    </div>
+                </div>
+
+                <div class="members-grid" id="active-list">
+                    <!-- 활성 멤버들이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+
+            <!-- 정지된 멤버 탭 -->
+            <div class="tab-content" id="suspended-content">
+                <div class="empty-state">
+                    <div class="empty-icon">🚫</div>
+                    <div class="empty-title">정지된 멤버가 없습니다</div>
+                    <div class="empty-description">현재 정지된 멤버가 없습니다.<br>필요시 멤버 관리에서 정지 조치를 취할 수 있습니다.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 확인 모달 -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon" id="modal-icon">⚠️</div>
+                <div class="modal-title" id="modal-title">작업 확인</div>
+                <div class="modal-description" id="modal-description">이 작업을 수행하시겠습니까?</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">취소</button>
+                <button class="btn btn-primary" id="confirm-btn" onclick="confirmAction()">
+                    <div class="loading-spinner" id="modal-spinner"></div>
+                    <span id="confirm-text">확인</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================
+        // API 설정
+        // ============================
+        const API_BASE_URL = 'http://localhost:8000';
+        let currentAction = null;
+        let targetMember = null;
+
+        // ============================
+        // 초기화 및 데이터 로드
+        // ============================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPendingMembers();
+            loadActiveMembers();
+            setupSearch();
+        });
+
+        // 승인 대기 멤버 로드
+        async function loadPendingMembers() {
+            const mockPendingMembers = [
+                {
+                    id: 1,
+                    name: '김신입',
+                    email: 'newbie@example.com',
+                    role: '사원',
+                    requestDate: '2024-01-15',
+                    inviteCode: 'ABC123',
+                    isContractor: false
+                },
+                {
+                    id: 2,
+                    name: '이계약',
+                    email: 'contractor@example.com',
+                    role: '대리',
+                    requestDate: '2024-01-14',
+                    inviteCode: 'XYZ789',
+                    isContractor: true,
+                    contractPeriod: '2024-01-15 ~ 2024-06-30'
+                },
+                {
+                    id: 3,
+                    name: '박지원',
+                    email: 'support@example.com',
+                    role: '사원',
+                    requestDate: '2024-01-13',
+                    inviteCode: 'DEF456',
+                    isContractor: false
+                }
+            ];
+
+            renderMemberCards('pending-list', mockPendingMembers, 'pending');
+        }
+
+        // 활성 멤버 로드
+        async function loadActiveMembers() {
+            const mockActiveMembers = [
+                {
+                    id: 101,
+                    name: '정관리자',
+                    email: 'admin@example.com',
+                    role: '이사',
+                    joinDate: '2023-06-01',
+                    lastActivity: '방금 전',
+                    isAdmin: true,
+                    isContractor: false
+                },
+                {
+                    id: 102,
+                    name: '김개발',
+                    email: 'dev@example.com',
+                    role: '과장',
+                    joinDate: '2023-08-15',
+                    lastActivity: '1시간 전',
+                    isAdmin: false,
+                    isContractor: false
+                },
+                {
+                    id: 103,
+                    name: '이디자인',
+                    email: 'design@example.com',
+                    role: '대리',
+                    joinDate: '2023-10-01',
+                    lastActivity: '3시간 전',
+                    isAdmin: false,
+                    isContractor: false
+                },
+                {
+                    id: 104,
+                    name: '박프리랜서',
+                    email: 'freelancer@example.com',
+                    role: '사원',
+                    joinDate: '2024-01-01',
+                    lastActivity: '1일 전',
+                    isAdmin: false,
+                    isContractor: true,
+                    contractPeriod: '2024-01-01 ~ 2024-12-31'
+                }
+            ];
+
+            renderMemberCards('active-list', mockActiveMembers, 'active');
+        }
+
+        // 멤버 카드 렌더링
+        function renderMemberCards(containerId, members, type) {
+            const container = document.getElementById(containerId);
+            
+            if (members.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">${type === 'pending' ? '⏳' : '👥'}</div>
+                        <div class="empty-title">${type === 'pending' ? '승인 대기 중인 멤버가 없습니다' : '멤버가 없습니다'}</div>
+                        <div class="empty-description">
+                            ${type === 'pending' ? '새로운 가입 요청이 들어오면 여기에 표시됩니다.' : '워크스페이스에 멤버를 초대해보세요.'}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = members.map(member => {
+                const avatar = member.name.charAt(0);
+                const statusBadge = getStatusBadge(member, type);
+                const actions = getActionsForMember(member, type);
+                const metaInfo = getMetaInfo(member, type);
+                
+                return `
+                    <div class="member-card" data-member-id="${member.id}">
+                        <div class="member-header">
+                            <div class="member-avatar">${avatar}</div>
+                            <div class="member-info">
+                                <div class="member-name">${member.name}</div>
+                                <div class="member-email">${member.email}</div>
+                                <div class="member-status">${statusBadge}</div>
+                            </div>
+                        </div>
+                        <div class="member-meta">
+                            ${metaInfo}
+                        </div>
+                        <div class="member-actions">
+                            ${actions}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 멤버 상태 배지 생성
+        function getStatusBadge(member, type) {
+            if (type === 'pending') {
+                return '<span class="status-badge status-pending">⏳ 승인 대기</span>';
+            } else if (type === 'active') {
+                if (member.isAdmin) {
+                    return '<span class="status-badge status-admin">👑 관리자</span>';
+                } else {
+                    return '<span class="status-badge status-active">✅ 활성</span>';
+                }
+            } else if (type === 'suspended') {
+                return '<span class="status-badge status-suspended">🚫 정지</span>';
+            }
+            return '';
+        }
+
+        // 메타 정보 생성
+        function getMetaInfo(member, type) {
+            const metaItems = [];
+            
+            metaItems.push(`
+                <div class="meta-row">
+                    <span class="meta-label">직급</span>
+                    <span class="meta-value">🏷️ ${member.role}</span>
+                </div>
+            `);
+
+            if (member.isContractor) {
+                metaItems.push(`
+                    <div class="meta-row">
+                        <span class="meta-label">고용형태</span>
+                        <span class="meta-value">🤝 계약직</span>
+                    </div>
+                `);
+            }
+
+            if (member.contractPeriod) {
+                metaItems.push(`
+                    <div class="meta-row">
+                        <span class="meta-label">계약기간</span>
+                        <span class="meta-value">📅 ${member.contractPeriod}</span>
+                    </div>
+                `);
+            }
+
+            if (member.joinDate) {
+                metaItems.push(`
+                    <div class="meta-row">
+                        <span class="meta-label">가입일</span>
+                        <span class="meta-value">📅 ${member.joinDate}</span>
+                    </div>
+                `);
+            }
+
+            if (member.requestDate) {
+                metaItems.push(`
+                    <div class="meta-row">
+                        <span class="meta-label">요청일</span>
+                        <span class="meta-value">📅 ${member.requestDate}</span>
+                    </div>
+                `);
+            }
+
+            if (member.lastActivity) {
+                metaItems.push(`
+                    <div class="meta-row">
+                        <span class="meta-label">마지막 활동</span>
+                        <span class="meta-value">🕒 ${member.lastActivity}</span>
+                    </div>
+                `);
+            }
+
+            if (member.inviteCode) {
+                metaItems.push(`
+                    <div class="meta-row">
+                        <span class="meta-label">초대 코드</span>
+                        <span class="meta-value">🔗 ${member.inviteCode}</span>
+                    </div>
+                `);
+            }
+
+            return metaItems.join('');
+        }
+
+        // 멤버별 액션 버튼 생성
+        function getActionsForMember(member, type) {
+            if (type === 'pending') {
+                return `
+                    <button class="action-btn action-approve" onclick="approveMember(${member.id}, '${member.name}')">
+                        ✅ 승인
+                    </button>
+                    <button class="action-btn action-reject" onclick="rejectMember(${member.id}, '${member.name}')">
+                        ❌ 거부
+                    </button>
+                `;
+            } else if (type === 'active') {
+                const actions = [
+                    `<button class="action-btn action-edit" onclick="editMember(${member.id}, '${member.name}')">
+                        ✏️ 편집
+                    </button>`
+                ];
+
+                if (!member.isAdmin) {
+                    actions.push(`
+                        <button class="action-btn action-suspend" onclick="suspendMember(${member.id}, '${member.name}')">
+                            🚫 정지
+                        </button>
+                    `);
+                }
+
+                return actions.join('');
+            }
+            return '';
+        }
+
+        // ============================
+        // 탭 전환
+        // ============================
+        function switchTab(tabName) {
+            // 탭 버튼 활성화
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            // 탭 콘텐츠 전환
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tabName}-content`).classList.add('active');
+        }
+
+        // ============================
+        // 멤버 액션 함수들
+        // ============================
+        
+        // 멤버 승인
+        async function approveMember(memberId, memberName) {
+            currentAction = 'approve';
+            targetMember = { id: memberId, name: memberName };
+            
+            showModal(
+                '✅',
+                '멤버 승인',
+                `${memberName}님의 워크스페이스 가입을 승인하시겠습니까?\n승인 후 바로 워크스페이스에 참여할 수 있습니다.`,
+                '승인하기'
+            );
+        }
+
+        // 멤버 거부
+        async function rejectMember(memberId, memberName) {
+            currentAction = 'reject';
+            targetMember = { id: memberId, name: memberName };
+            
+            showModal(
+                '❌',
+                '가입 거부',
+                `${memberName}님의 워크스페이스 가입 요청을 거부하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`,
+                '거부하기'
+            );
+        }
+
+        // 멤버 편집
+        function editMember(memberId, memberName) {
+            alert(`✏️ ${memberName}님의 정보 편집 기능은 개발 중입니다.`);
+        }
+
+        // 멤버 정지
+        async function suspendMember(memberId, memberName) {
+            currentAction = 'suspend';
+            targetMember = { id: memberId, name: memberName };
+            
+            showModal(
+                '🚫',
+                '멤버 정지',
+                `${memberName}님을 정지하시겠습니까?\n정지된 멤버는 워크스페이스에 접근할 수 없습니다.`,
+                '정지하기'
+            );
+        }
+
+        // ============================
+        // API 호출 함수들
+        // ============================
+        
+        async function approveMemberAPI(memberId) {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_BASE_URL}/workspaces/1/approve/${memberId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    return { success: true };
+                } else {
+                    const data = await response.json();
+                    return { success: false, error: data.detail || '승인에 실패했습니다.' };
+                }
+            } catch (error) {
+                return { success: false, error: '서버 연결에 실패했습니다.' };
+            }
+        }
+
+        async function rejectMemberAPI(memberId) {
+            // 실제로는 별도의 거부 API가 필요할 수 있음
+            try {
+                return { success: true };
+            } catch (error) {
+                return { success: false, error: '거부 처리에 실패했습니다.' };
+            }
+        }
+
+        // ============================
+        // 모달 관리
+        // ============================
+        
+        function showModal(icon, title, description, confirmText) {
+            document.getElementById('modal-icon').textContent = icon;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-description').textContent = description;
+            document.getElementById('confirm-text').textContent = confirmText;
+            document.getElementById('confirm-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('confirm-modal').style.display = 'none';
+            currentAction = null;
+            targetMember = null;
+        }
+
+        async function confirmAction() {
+            if (!currentAction || !targetMember) return;
+
+            const confirmBtn = document.getElementById('confirm-btn');
+            const confirmText = document.getElementById('confirm-text');
+            const spinner = document.getElementById('modal-spinner');
+
+            // 로딩 상태
+            confirmBtn.disabled = true;
+            confirmText.textContent = '처리 중...';
+            spinner.style.display = 'inline-block';
+
+            try {
+                let result;
+                
+                switch (currentAction) {
+                    case 'approve':
+                        result = await approveMemberAPI(targetMember.id);
+                        break;
+                    case 'reject':
+                        result = await rejectMemberAPI(targetMember.id);
+                        break;
+                    case 'suspend':
+                        result = { success: true }; // 임시 처리
+                        break;
+                    default:
+                        result = { success: false, error: '알 수 없는 작업입니다.' };
+                }
+
+                if (result.success) {
+                    // 성공 처리
+                    const actionNames = {
+                        'approve': '승인',
+                        'reject': '거부',
+                        'suspend': '정지'
+                    };
+                    
+                    const actionEmojis = {
+                        'approve': '✅',
+                        'reject': '❌',
+                        'suspend': '🚫'
+                    };
+                    
+                    alert(`${actionEmojis[currentAction]} ${targetMember.name}님의 ${actionNames[currentAction]}이 완료되었습니다.`);
+                    
+                    // 해당 멤버 카드 제거
+                    const memberCard = document.querySelector(`[data-member-id="${targetMember.id}"]`);
+                    if (memberCard) {
+                        memberCard.style.animation = 'fadeOut 0.3s ease-out forwards';
+                        setTimeout(() => {
+                            memberCard.remove();
+                        }, 300);
+                    }
+                    
+                    // 통계 업데이트
+                    updateStats(currentAction);
+                    
+                    closeModal();
+                } else {
+                    alert(`❌ 오류: ${result.error}`);
+                }
+            } catch (error) {
+                alert('❌ 처리 중 오류가 발생했습니다.');
+            } finally {
+                // 로딩 상태 원복
+                confirmBtn.disabled = false;
+                confirmText.textContent = document.getElementById('confirm-text').textContent;
+                spinner.style.display = 'none';
+            }
+        }
+
+        // 통계 업데이트
+        function updateStats(action) {
+            if (action === 'approve') {
+                // 승인 대기 -1, 활성 멤버 +1
+                const pendingBadge = document.querySelector('#pending-tab .tab-badge');
+                const currentPending = parseInt(pendingBadge.textContent) - 1;
+                if (currentPending > 0) {
+                    pendingBadge.textContent = currentPending;
+                } else {
+                    pendingBadge.remove();
+                }
+                
+                // 통계 카드도 업데이트
+                const statCards = document.querySelectorAll('.stat-card');
+                // 전체 멤버 변화 없음 (이미 포함됨)
+                // 승인 대기 -1
+                // 활성 멤버 +1
+            }
+        }
+
+        // ============================
+        // 추가 기능들
+        // ============================
+        
+        function inviteMembers() {
+            const inviteCode = Math.random().toString(36).substr(2, 6).toUpperCase();
+            
+            const message = `🎉 새 멤버 초대 코드가 생성되었습니다!\n\n🔗 초대 코드: ${inviteCode}\n\n이 코드를 새 멤버에게 공유하여 워크스페이스에 초대하세요.`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(inviteCode).then(() => {
+                    alert(message + '\n\n📋 초대 코드가 클립보드에 복사되었습니다.');
+                });
+            } else {
+                alert(message);
+            }
+        }
+
+        function exportMembers() {
+            alert('📤 멤버 목록 내보내기 기능은 개발 중입니다.');
+        }
+
+        // 검색 기능
+        function setupSearch() {
+            const searchInputs = ['pending-search', 'active-search'];
+            
+            searchInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase();
+                        const listType = inputId.split('-')[0];
+                        const memberCards = document.querySelectorAll(`#${listType}-list .member-card`);
+                        
+                        memberCards.forEach(card => {
+                            const name = card.querySelector('.member-name').textContent.toLowerCase();
+                            const email = card.querySelector('.member-email').textContent.toLowerCase();
+                            
+                            if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+        // 애니메이션 추가
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                to {
+                    opacity: 0;
+                    transform: scale(0.9);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 모달 외부 클릭시 닫기
+        document.getElementById('confirm-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // 개발자 도구용 디버깅
+        window.debugAdmin = {
+            switchToTab: (tab) => switchTab(tab),
+            simulateApproval: (memberId) => {
+                const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
+                if (memberCard) {
+                    memberCard.remove();
+                    updateStats('approve');
+                }
+                console.log(`멤버 ${memberId} 승인이 시뮬레이션되었습니다.`);
+            },
+            addTestMember: () => {
+                console.log('테스트 멤버 추가 기능은 개발 중입니다.');
+            }
+        };
+        
+        console.log('🔧 개발자 도구에서 debugAdmin 객체를 사용하여 테스트할 수 있습니다.');
+    </script>
+</body>
+</html>
