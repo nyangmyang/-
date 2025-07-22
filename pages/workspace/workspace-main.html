@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입 완료 - WorkSpace</title>
+    <title>워크스페이스 - WorkSpace</title>
     
     <!-- CSS 파일들 임포트 -->
     <link rel="stylesheet" href="../../css/common.css">
     <link rel="stylesheet" href="../../css/workspace-main.css">
+    
+    
 </head>
 <body>
+    <!-- 파일 입력 (숨김) -->
+    <input type="file" id="file-input" multiple style="display: none;" accept="*/*">
+
     <div class="sidebar">
         <div class="workspace-header">
             <div class="workspace-name">🌊 워크스페이스</div>
@@ -18,28 +23,10 @@
         
         <div class="channels-section">
             <div class="section-title">채널</div>
-            <ul class="channel-list">
-                <li class="channel-item active">
-                    <span class="channel-icon">#</span>
-                    전체
-                </li>
-                <li class="channel-item">
-                    <span class="channel-icon">#</span>
-                    개발팀
-                </li>
-                <li class="channel-item">
-                    <span class="channel-icon">#</span>
-                    디자인
-                </li>
-                <li class="channel-item">
-                    <span class="channel-icon">#</span>
-                    마케팅
-                </li>
-                <li class="channel-item">
-                    <span class="channel-icon">#</span>
-                    공지사항
-                </li>
-            </ul>
+            <div class="add-channel-button">
+                <button onclick="location.href='add-channel.html'" title="채널 추가">➕ 채널 추가</button>
+            </div>
+
         </div>
 
         <div class="user-section">
@@ -61,67 +48,329 @@
 
     <div class="main-content">
         <div class="chat-header">
-            <div class="channel-title"># 전체</div>
-            <div class="channel-description">전체 팀원이 참여하는 채널입니다</div>
-        </div>
-
-        <div class="welcome-message">
-            <div class="welcome-icon">🏠</div>
-            <div class="welcome-title"># 전체 채널에 모두가 있습니다</div>
-            <div class="welcome-description">
-                공지와 회사 뉴스, 휴일 이벤트 또는 천천한 아이디어를 공유하세요. ⭐
+            <div class="header-left">
+                <div class="channel-title"># 전체</div>
+                <div class="channel-description">전체 팀원이 참여하는 채널입니다</div>
             </div>
         </div>
 
-        <div class="chat-messages">
-            <div class="message">
-                <div class="message-avatar">정</div>
-                <div class="message-content">
-                    <div class="message-header">
-                        <span class="message-author">정진섭</span>
-                        <span class="message-time">오전 9:14</span>
+        <!-- 탭 버튼 -->
+        <div class="content-tabs">
+            <button class="tab-button active" data-tab="chat" onclick="switchTab('chat')">
+                💬 대화
+            </button>
+            <button class="tab-button" data-tab="files" onclick="switchTab('files')">
+                📁 파일
+            </button>
+        </div>
+
+        <!-- 채팅 탭 -->
+        <div class="tab-content active" id="chat-content">
+            <div class="chat-content">
+                <div class="welcome-message" id="welcome-message">
+                    <div class="welcome-icon">🏠</div>
+                    <div class="welcome-title"># 전체 채널에 모두가 있습니다</div>
+                    <div class="welcome-description">
+                        공지와 회사 뉴스, 휴일 이벤트 또는 천천한 아이디어를 공유하세요. ⭐
                     </div>
-                    <div class="message-text">
-                        새로운 프로젝트 시작합니다!<br>
-                        모든 팀원분들의 적극적인 참여 부탁드려요 🚀
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message">
+                        <div class="message-avatar">정</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-author">정진섭</span>
+                                <span class="message-time">오전 9:14</span>
+                            </div>
+                            <div class="message-text">
+                                새로운 프로젝트 시작합니다!<br>
+                                모든 팀원분들의 적극적인 참여 부탁드려요 🚀
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="message-input-container">
+                    <textarea class="message-input" id="message-input" placeholder="# 전체 채널에 메시지 보내기" rows="1"></textarea>
+                    <div class="input-toolbar">
+                        <div class="input-actions">
+                            <button class="input-btn" onclick="attachFile()" title="파일 첨부">📎</button>
+                            <button class="input-btn" onclick="addEmoji()" title="이모지">😊</button>
+                            <button class="input-btn" onclick="mentionUser()" title="멘션">@</button>
+                            <button class="input-btn" onclick="voiceMessage()" title="음성 메시지">🎤</button>
+                        </div>
+                        <button class="send-btn" id="send-btn" onclick="sendMessage()">전송</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="message-input-container">
-            <textarea class="message-input" placeholder="# 전체 채널에 메시지 보내기" rows="1"></textarea>
-            <div class="input-toolbar">
-                <div class="input-actions">
-                    <button class="input-btn">📎</button>
-                    <button class="input-btn">😊</button>
-                    <button class="input-btn">@</button>
-                    <button class="input-btn">🎤</button>
+        <!-- 파일 탭 -->
+        <div class="tab-content" id="files-content">
+            <div class="files-content">
+                <div class="upload-area" id="upload-area" onclick="triggerFileUpload()">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-title">파일 업로드</div>
+                    <div class="upload-description">
+                        파일을 드래그하여 놓거나 클릭하여 선택하세요
+                    </div>
+                    <button class="upload-button">
+                        📤 파일 선택
+                    </button>
                 </div>
-                <button class="send-btn">전송</button>
+
+                <div class="upload-progress" id="upload-progress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">업로드 중...</div>
+                </div>
+
+                <div class="files-list">
+                    <div class="files-header">
+                        <div class="files-title">채널 파일</div>
+                    </div>
+                    <div id="files-list-container">
+                        <!-- 파일 목록이 여기에 동적으로 추가됩니다 -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 간단한 인터랙션
+        // ============================
+        // 전역 변수
+        // ============================
+        let currentChannel = 'general';
+        let currentTab = 'chat';
+        let channelData = {
+            general: {
+                name: '전체',
+                description: '전체 팀원이 참여하는 채널입니다',
+                messages: [
+                    {
+                        author: '정진섭',
+                        avatar: '정',
+                        time: '오전 9:14',
+                        text: '새로운 프로젝트 시작합니다!<br>모든 팀원분들의 적극적인 참여 부탁드려요 🚀'
+                    }
+                ],
+                files: []
+            },
+            dev: {
+                name: '개발팀',
+                description: '개발팀 전용 채널입니다',
+                messages: [
+                    {
+                        author: '김개발',
+                        avatar: '김',
+                        time: '오전 10:30',
+                        text: 'API 문서 업데이트 완료했습니다! 👨‍💻'
+                    }
+                ],
+                files: [
+                    {
+                        name: 'API_Documentation.pdf',
+                        icon: '📄',
+                        size: '2.5 MB',
+                        author: '김개발',
+                        time: '오전 10:25'
+                    }
+                ]
+            },
+            design: {
+                name: '디자인',
+                description: '디자인팀 전용 채널입니다',
+                messages: [
+                    {
+                        author: '이디자인',
+                        avatar: '이',
+                        time: '오후 2:15',
+                        text: '새로운 UI 컴포넌트 디자인 공유드립니다 🎨'
+                    }
+                ],
+                files: [
+                    {
+                        name: 'UI_Components.fig',
+                        icon: '🎨',
+                        size: '15.2 MB',
+                        author: '이디자인',
+                        time: '오후 2:10'
+                    }
+                ]
+            },
+            marketing: {
+                name: '마케팅',
+                description: '마케팅팀 전용 채널입니다',
+                messages: [
+                    {
+                        author: '박마케팅',
+                        avatar: '박',
+                        time: '오후 3:45',
+                        text: '이번 달 마케팅 성과 보고서 공유합니다 📊'
+                    }
+                ],
+                files: [
+                    {
+                        name: 'Marketing_Report_Q1.xlsx',
+                        icon: '📊',
+                        size: '890 KB',
+                        author: '박마케팅',
+                        time: '오후 3:40'
+                    }
+                ]
+            },
+            notice: {
+                name: '공지사항',
+                description: '중요한 공지사항을 확인하세요',
+                messages: [
+                    {
+                        author: '관리자',
+                        avatar: '관',
+                        time: '어제',
+                        text: '💡 새로운 업무 프로세스가 도입됩니다. 자세한 내용은 첨부된 문서를 확인해주세요.'
+                    }
+                ],
+                files: [
+                    {
+                        name: 'New_Process_Guide.pdf',
+                        icon: '📋',
+                        size: '1.2 MB',
+                        author: '관리자',
+                        time: '어제'
+                    }
+                ]
+            }
+        };
+
+        // ============================
+        // 채널 전환
+        // ============================
         document.querySelectorAll('.channel-item').forEach(item => {
             item.addEventListener('click', function() {
-                document.querySelectorAll('.channel-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                
-                const channelName = this.textContent.trim();
-                document.querySelector('.channel-title').textContent = channelName;
-                document.querySelector('.channel-description').textContent = `${channelName} 채널입니다`;
+                const channelId = this.dataset.channelId;
+                switchChannel(channelId);
             });
         });
 
+        function switchChannel(channelId) {
+            currentChannel = channelId;
+            
+            // 사이드바 활성화 상태 변경
+            document.querySelectorAll('.channel-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-channel-id="${channelId}"]`).classList.add('active');
+
+            // 헤더 업데이트
+            const channel = channelData[channelId];
+            document.querySelector('.channel-title').textContent = `# ${channel.name}`;
+            document.querySelector('.channel-description').textContent = channel.description;
+            
+            // 메시지 입력 placeholder 업데이트
+            document.getElementById('message-input').placeholder = `# ${channel.name} 채널에 메시지 보내기`;
+
+            // 콘텐츠 업데이트
+            updateChannelContent();
+        }
+
+        function updateChannelContent() {
+            const channel = channelData[currentChannel];
+            
+            // 환영 메시지 업데이트
+            const welcomeMessage = document.getElementById('welcome-message');
+            welcomeMessage.innerHTML = `
+                <div class="welcome-icon">🏠</div>
+                <div class="welcome-title"># ${channel.name} 채널에 오신 것을 환영합니다</div>
+                <div class="welcome-description">
+                    ${channel.description} 자유롭게 소통하고 파일을 공유하세요. ⭐
+                </div>
+            `;
+
+            // 메시지 업데이트
+            renderMessages();
+            
+            // 파일 목록 업데이트
+            renderFiles();
+        }
+
+        // ============================
+        // 탭 전환
+        // ============================
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // 탭 버튼 활성화
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // 탭 콘텐츠 전환
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tabName}-content`).classList.add('active');
+        }
+
+        // ============================
+        // 메시지 관련 기능
+        // ============================
+        function renderMessages() {
+            const messagesContainer = document.getElementById('chat-messages');
+            const channel = channelData[currentChannel];
+            
+            messagesContainer.innerHTML = channel.messages.map(message => `
+                <div class="message">
+                    <div class="message-avatar">${message.avatar}</div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">${message.author}</span>
+                            <span class="message-time">${message.time}</span>
+                        </div>
+                        <div class="message-text">${message.text}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            
+            if (!text) return;
+
+            const channel = channelData[currentChannel];
+            const newMessage = {
+                author: '나',
+                avatar: '나',
+                time: '방금 전',
+                text: text.replace(/\n/g, '<br>')
+            };
+
+            channel.messages.push(newMessage);
+            renderMessages();
+
+            input.value = '';
+            input.style.height = 'auto';
+            
+            // 전송 버튼 비활성화
+            updateSendButton();
+        }
+
         // 메시지 입력 자동 크기 조절
-        const messageInput = document.querySelector('.message-input');
+        const messageInput = document.getElementById('message-input');
         messageInput.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            updateSendButton();
         });
+
+        function updateSendButton() {
+            const sendBtn = document.getElementById('send-btn');
+            const hasText = messageInput.value.trim().length > 0;
+            sendBtn.disabled = !hasText;
+        }
 
         // 엔터키로 전송
         messageInput.addEventListener('keypress', function(e) {
@@ -131,32 +380,423 @@
             }
         });
 
-        function sendMessage() {
-            const input = document.querySelector('.message-input');
-            const text = input.value.trim();
+        // ============================
+        // 파일 업로드 관련 기능
+        // ============================
+        const fileInput = document.getElementById('file-input');
+        const uploadArea = document.getElementById('upload-area');
+
+        function triggerFileUpload() {
+            fileInput.click();
+        }
+
+        // 파일 선택 이벤트
+        fileInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                handleFileUpload(files);
+            }
+        });
+
+        // 드래그 앤 드롭 이벤트
+        let dragCounter = 0;
+
+        document.addEventListener('dragenter', function(e) {
+            e.preventDefault();
+            dragCounter++;
+            if (currentTab === 'files') {
+                uploadArea.classList.add('dragover');
+            }
+        });
+
+        document.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            dragCounter--;
+            if (dragCounter === 0 && currentTab === 'files') {
+                uploadArea.classList.remove('dragover');
+            }
+        });
+
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dragCounter = 0;
             
-            if (text) {
-                const messagesContainer = document.querySelector('.chat-messages');
-                const messageHtml = `
-                    <div class="message">
-                        <div class="message-avatar">나</div>
-                        <div class="message-content">
-                            <div class="message-header">
-                                <span class="message-author">나</span>
-                                <span class="message-time">방금 전</span>
-                            </div>
-                            <div class="message-text">${text}</div>
-                        </div>
+            if (currentTab === 'files') {
+                uploadArea.classList.remove('dragover');
+                const files = Array.from(e.dataTransfer.files);
+                if (files.length > 0) {
+                    handleFileUpload(files);
+                }
+            }
+        });
+
+        // 파일 업로드 처리
+        function handleFileUpload(files) {
+            const progressContainer = document.getElementById('upload-progress');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+
+            // 업로드 시작
+            progressContainer.style.display = 'block';
+            progressFill.style.width = '0%';
+            progressText.textContent = `${files.length}개 파일 업로드 중...`;
+
+            // 가짜 업로드 진행률
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                
+                progressFill.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    completeFileUpload(files);
+                }
+            }, 150);
+        }
+
+        function completeFileUpload(files) {
+            const channel = channelData[currentChannel];
+            const progressContainer = document.getElementById('upload-progress');
+            const progressText = document.getElementById('progress-text');
+
+            // 파일을 채널에 추가
+            files.forEach(file => {
+                const newFile = {
+                    name: file.name,
+                    icon: getFileIcon(file.name),
+                    size: formatFileSize(file.size),
+                    author: '나',
+                    time: '방금 전'
+                };
+                channel.files.push(newFile);
+            });
+
+            // 성공 메시지 표시
+            progressText.textContent = `✅ ${files.length}개 파일이 성공적으로 업로드되었습니다!`;
+            
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+                renderFiles();
+            }, 2000);
+
+            // 파일 입력 초기화
+            fileInput.value = '';
+        }
+
+        // 파일 아이콘 반환
+        function getFileIcon(fileName) {
+            const extension = fileName.split('.').pop().toLowerCase();
+            const iconMap = {
+                'pdf': '📄', 'doc': '📄', 'docx': '📄', 'txt': '📄',
+                'xls': '📊', 'xlsx': '📊', 'csv': '📊',
+                'ppt': '📊', 'pptx': '📊',
+                'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'svg': '🖼️',
+                'fig': '🎨', 'sketch': '🎨', 'ai': '🎨', 'psd': '🎨',
+                'js': '💻', 'html': '💻', 'css': '💻', 'py': '💻', 'java': '💻',
+                'zip': '📦', 'rar': '📦', '7z': '📦',
+                'mp4': '🎥', 'avi': '🎥', 'mov': '🎥',
+                'mp3': '🎵', 'wav': '🎵', 'flac': '🎵'
+            };
+            return iconMap[extension] || '📄';
+        }
+
+        // 파일 크기 포맷팅
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // 파일 목록 렌더링
+        function renderFiles() {
+            const filesContainer = document.getElementById('files-list-container');
+            const channel = channelData[currentChannel];
+            
+            if (channel.files.length === 0) {
+                filesContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #64748b;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
+                        <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">아직 업로드된 파일이 없습니다</div>
+                        <div style="font-size: 14px;">파일을 업로드하여 팀원들과 공유해보세요!</div>
                     </div>
                 `;
-                messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
-                input.value = '';
-                input.style.height = 'auto';
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                return;
+            }
+
+        // ✅ 워크스페이스 채널 목록 가져오기 함수 정의
+        async function loadWorkspaceChannels(workspaceId) {
+          const token = localStorage.getItem("access_token");
+          const res = await fetch(`https://your-api.com/workspaces/${workspaceId}/channels`, {
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          });
+
+          if (!res.ok) {
+            alert("🚫 채널 목록을 불러오지 못했습니다.");
+            return;
+          }
+
+          const channels = await res.json();
+          const channelList = document.querySelector('.channel-list');
+
+          channels.forEach(channel => {
+            // channelData에 추가
+            channelData[channel.id] = {
+              name: channel.name,
+              description: channel.is_public ? "공개 채널입니다" : "🔒 비공개 채널입니다",
+              messages: [],
+              files: []
+            };
+
+            const li = document.createElement('li');
+            li.classList.add('channel-item');
+            li.dataset.channelId = channel.id;
+            li.innerHTML = `<span class="channel-icon">#</span> ${channel.name}${!channel.is_public ? ' 🔒' : ''}`;
+            li.addEventListener('click', () => {
+              if (channel.is_public) {
+                switchChannel(channel.id);
+              } else {
+                requestJoinPrivateChannel(channel.id, channel.workspace_id);
+              }
+            });
+
+            channelList.appendChild(li);
+          });
+        }
+
+
+            filesContainer.innerHTML = channel.files.map((file, index) => `
+                <div class="file-item">
+                    <div class="file-icon">${file.icon}</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-meta">${file.size} • ${file.author} • ${file.time}</div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="file-action-btn" onclick="downloadFile(${index})" title="다운로드">
+                            📥
+                        </button>
+                        <button class="file-action-btn" onclick="shareFile(${index})" title="공유">
+                            🔗
+                        </button>
+                        <button class="file-action-btn" onclick="deleteFile(${index})" title="삭제">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================
+        // 파일 액션 함수들
+        // ============================
+        function downloadFile(index) {
+            const channel = channelData[currentChannel];
+            const file = channel.files[index];
+            alert(`📥 "${file.name}" 파일을 다운로드합니다.`);
+        }
+
+        function shareFile(index) {
+            const channel = channelData[currentChannel];
+            const file = channel.files[index];
+            
+            if (navigator.clipboard) {
+                const shareLink = `https://workspace.com/files/${currentChannel}/${file.name}`;
+                navigator.clipboard.writeText(shareLink).then(() => {
+                    alert(`🔗 "${file.name}" 공유 링크가 클립보드에 복사되었습니다!`);
+                });
+            } else {
+                alert(`🔗 "${file.name}" 공유 링크: https://workspace.com/files/${currentChannel}/${file.name}`);
             }
         }
 
-        document.querySelector('.send-btn').addEventListener('click', sendMessage);
+        function deleteFile(index) {
+            const channel = channelData[currentChannel];
+            const file = channel.files[index];
+            
+            if (confirm(`"${file.name}" 파일을 삭제하시겠습니까?`)) {
+                channel.files.splice(index, 1);
+                renderFiles();
+                alert(`🗑️ "${file.name}" 파일이 삭제되었습니다.`);
+            }
+        }
+
+        // ============================
+        // 입력 도구 함수들
+        // ============================
+        function attachFile() {
+            triggerFileUpload();
+        }
+
+        function addEmoji() {
+            const input = document.getElementById('message-input');
+            const emojis = ['😊', '👍', '❤️', '🎉', '💯', '🔥', '✨', '🚀'];
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            const cursorPos = input.selectionStart;
+            const textBefore = input.value.substring(0, cursorPos);
+            const textAfter = input.value.substring(cursorPos);
+            
+            input.value = textBefore + randomEmoji + textAfter;
+            input.focus();
+            input.setSelectionRange(cursorPos + 2, cursorPos + 2);
+            
+            updateSendButton();
+        }
+
+        function mentionUser() {
+            const input = document.getElementById('message-input');
+            const users = ['@김개발', '@이디자인', '@박마케팅', '@정진섭'];
+            
+            // 간단한 멘션 메뉴 시뮬레이션
+            const mention = prompt('멘션할 사용자를 선택하세요:\n' + users.join('\n'));
+            if (mention && users.includes(mention)) {
+                const cursorPos = input.selectionStart;
+                const textBefore = input.value.substring(0, cursorPos);
+                const textAfter = input.value.substring(cursorPos);
+                
+                input.value = textBefore + mention + ' ' + textAfter;
+                input.focus();
+                input.setSelectionRange(cursorPos + mention.length + 1, cursorPos + mention.length + 1);
+                
+                updateSendButton();
+            }
+        }
+
+        function voiceMessage() {
+            alert('🎤 음성 메시지 기능은 개발 중입니다.');
+        }
+
+        // ============================
+        // 초기화
+        // ============================
+        document.addEventListener('DOMContentLoaded', function() {
+            // 초기 상태 설정
+            updateChannelContent();
+            updateSendButton();
+            
+            // 개발자 도구용 디버깅
+            window.debugWorkspace = {
+                switchChannel: (channelId) => switchChannel(channelId),
+                addTestMessage: (channelId, message) => {
+                    if (channelData[channelId]) {
+                        channelData[channelId].messages.push({
+                            author: '테스트',
+                            avatar: '테',
+                            time: '방금 전',
+                            text: message || '테스트 메시지입니다'
+                        });
+                        if (currentChannel === channelId) {
+                            renderMessages();
+                        }
+                    }
+                },
+                addTestFile: (channelId, fileName) => {
+                    if (channelData[channelId]) {
+                        channelData[channelId].files.push({
+                            name: fileName || 'test_file.pdf',
+                            icon: '📄',
+                            size: '1.2 MB',
+                            author: '테스트',
+                            time: '방금 전'
+                        });
+                        if (currentChannel === channelId) {
+                            renderFiles();
+                        }
+                    }
+                },
+                getCurrentChannel: () => currentChannel,
+                getChannelData: () => channelData
+            };
+            
+            console.log('🔧 개발자 도구에서 debugWorkspace 객체를 사용하여 테스트할 수 있습니다.');
+            console.log('예: debugWorkspace.addTestMessage("dev", "테스트 메시지")');
+        });
+
+        // ============================
+        // API 연동 준비 (주석처리 - 나중에 사용)
+        // ============================
+        /*
+        const API_BASE_URL = 'http://localhost:8000';
+
+        async function sendMessageAPI(channelId, content) {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_BASE_URL}/channels/${channelId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content })
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('메시지 전송 실패:', error);
+                return false;
+            }
+        }
+
+        async function uploadFileAPI(channelId, formData) {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_BASE_URL}/channels/${channelId}/files`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('파일 업로드 실패:', error);
+                return false;
+            }
+        }
+
+        async function loadChannelMessages(channelId) {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_BASE_URL}/channels/${channelId}/messages`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    return await response.json();
+                }
+            } catch (error) {
+                console.error('메시지 로드 실패:', error);
+            }
+            return [];
+        }
+
+        async function loadChannelFiles(channelId) {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_BASE_URL}/channels/${channelId}/files`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    return await response.json();
+                }
+            } catch (error) {
+                console.error('파일 로드 실패:', error);
+            }
+            return [];
+        }
+        */
     </script>
 </body>
 </html>
