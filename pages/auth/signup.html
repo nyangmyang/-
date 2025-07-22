@@ -42,12 +42,7 @@
             </div>
         </div>
 
-        <!-- 성공 메시지 -->
-        <div class="success-message" id="success-message">
-            <div class="success-icon">🎉</div>
-            <h3>회원가입 완료!</h3>
-            <p>이메일 인증 후 로그인하실 수 있습니다.</p>
-        </div>
+    
 
         <!-- 에러 메시지 -->
         <div class="error-message" id="error-message" style="display: none; background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 20px;">
@@ -97,12 +92,6 @@
                         placeholder="8자 이상의 안전한 비밀번호"
                         required
                     >
-                    <div class="password-strength" id="password-strength">
-                        <div class="strength-bar">
-                            <div class="strength-fill" id="strength-fill"></div>
-                        </div>
-                        <div class="strength-text" id="strength-text"></div>
-                    </div>
                     <div class="validation-message" id="password-error"></div>
                 </div>
 
@@ -202,13 +191,11 @@
                     <div class="validation-message" id="workspace-error"></div>
                 </div>
 
-                <!-- 초대 코드 입력 필드 + 요청 버튼 -->
+                <!-- 초대 코드 입력 필드 -->
                 <div class="form-group" id="invite-code-group" style="display: none;">
                     <label class="form-label" for="invite_code">
                         초대 코드 <span class="required">*</span>
                     </label>
-                    
-                    <!-- 초대 코드 입력과 요청 버튼을 나란히 배치 -->
                     <div style="display: flex; gap: 8px; align-items: stretch;">
                         <input 
                             type="text" 
@@ -226,7 +213,6 @@
                             📨 요청하기
                         </button>
                     </div>
-                    
                     <div class="form-help" style="color: #64748b; font-size: 12px; margin-top: 4px;">
                         💡 초대 코드가 없다면 "요청하기" 버튼을 눌러 워크스페이스 관리자에게 참여 요청을 보내세요.
                     </div>
@@ -248,16 +234,16 @@
 
     <script>
         // ============================
-        // API 설정
+        // 변수 설정
         // ============================
         const API_BASE_URL = 'http://localhost:8000';
-
         let currentStep = 1;
-        let workspaceOption = 'create'; // 'create' 또는 'join'
+        let workspaceOption = 'create';
 
         // ============================
-        // API 호출 함수들
+        // API 호출 함수들 (주석처리 - 나중에 사용)
         // ============================
+        /*
         async function signupUser(userData) {
             try {
                 const response = await fetch(`${API_BASE_URL}/auth/signup`, {
@@ -290,86 +276,32 @@
                     },
                     body: JSON.stringify({ email })
                 });
-
                 return response.ok;
             } catch (error) {
                 console.error('Email verification request failed:', error);
                 return false;
             }
         }
+        */
 
-        // 🟢 새로 추가된 초대 코드 요청 함수
-        async function requestInviteCode() {
-            const btn = event.target;
-            const originalText = btn.textContent;
+        // ============================
+        // 빠른 테스트용 함수 (개발모드)
+        // ============================
+        async function processSignup() {
+            const spinner = document.getElementById('loading-spinner');
+            const btnText = document.getElementById('btn-text');
+            const signupBtn = document.getElementById('signup-btn');
             
-            // 필수 정보 확인
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const roleId = document.getElementById('role_id').value;
+            // 로딩 애니메이션
+            signupBtn.disabled = true;
+            btnText.textContent = '처리중...';
+            spinner.style.display = 'inline-block';
             
-            if (!name || !email || !roleId) {
-                alert('⚠️ 먼저 기본 정보(이름, 이메일, 직급)를 입력해주세요.');
-                return;
-            }
-            
-            // 워크스페이스 이름 또는 ID 입력받기
-            const workspaceInfo = prompt('참여하고 싶은 워크스페이스 이름을 입력하세요:', '예: 스타트업팀');
-            if (!workspaceInfo) {
-                return;
-            }
-            
-            // 로딩 상태
-            btn.disabled = true;
-            btn.textContent = '📤 요청 중...';
-            
-            try {
-                // 워크스페이스 참여 요청 API 호출
-                const response = await fetch(`${API_BASE_URL}/workspaces/1/join-request`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name: name,
-                        email: email,
-                        role_id: parseInt(roleId),
-                        workspace_name: workspaceInfo,
-                        is_contractor: false,
-                        start_date: new Date().toISOString().split('T')[0],
-                        end_date: "2025-12-31",
-                        message: `안녕하세요, ${name}입니다. "${workspaceInfo}" 워크스페이스에 참여하고 싶습니다.`
-                    })
-                });
-                
-                if (response.ok) {
-                    // 성공 메시지
-                    alert(`✅ 참여 요청이 전송되었습니다!\n\n📧 관리자가 검토 후 초대 코드를 이메일로 보내드립니다.\n받은 초대 코드를 위 입력창에 입력하세요.`);
-                    
-                    // 입력 필드에 포커스
-                    document.getElementById('invite_code').focus();
-                } else {
-                    const errorData = await response.json();
-                    alert(`❌ 요청 실패: ${errorData.detail || '알 수 없는 오류가 발생했습니다.'}`);
-                }
-                
-            } catch (error) {
-                console.error('Invite request error:', error);
-                
-                // 개발/테스트용 대체 처리
-                const confirmed = confirm(`🔧 서버 연결에 실패했습니다.\n\n개발/테스트용으로 샘플 초대 코드를 사용하시겠습니까?`);
-                
-                if (confirmed) {
-                    const sampleCode = 'REQ' + Math.random().toString(36).substr(2, 6).toUpperCase();
-                    document.getElementById('invite_code').value = sampleCode;
-                    checkStep2Validity();
-                    alert(`📝 테스트용 초대 코드: ${sampleCode}\n\n실제 환경에서는 관리자가 승인 후 이메일로 전송됩니다.`);
-                }
-            } finally {
-                // 버튼 상태 복구
-                btn.disabled = false;
-                btn.textContent = originalText;
-            }
+            // 1초 후 성공
+            setTimeout(() => {
+                alert('🎉 회원가입 완료!');
+                window.location.href = 'signup-complete.html';
+            }, 1000);
         }
 
         // ============================
@@ -381,14 +313,12 @@
             
             if (name.value.length < 2) {
                 name.classList.add('error');
-                name.classList.remove('success');
                 error.textContent = '이름은 2자 이상이어야 합니다.';
-                error.className = 'validation-message error';
                 return false;
             } else {
                 name.classList.remove('error');
                 name.classList.add('success');
-                error.className = 'validation-message';
+                error.textContent = '';
                 return true;
             }
         }
@@ -400,15 +330,12 @@
             
             if (!emailRegex.test(email.value)) {
                 email.classList.add('error');
-                email.classList.remove('success');
                 error.textContent = '유효한 이메일 주소를 입력하세요.';
-                error.className = 'validation-message error';
                 return false;
             } else {
                 email.classList.remove('error');
                 email.classList.add('success');
-                error.textContent = '사용 가능한 이메일입니다.';
-                error.className = 'validation-message success';
+                error.textContent = '';
                 return true;
             }
         }
@@ -416,52 +343,15 @@
         function validatePassword() {
             const password = document.getElementById('password');
             const error = document.getElementById('password-error');
-            const strengthIndicator = document.getElementById('password-strength');
-            const strengthFill = document.getElementById('strength-fill');
-            const strengthText = document.getElementById('strength-text');
             
-            strengthIndicator.style.display = 'block';
-            
-            const value = password.value;
-            let strength = 0;
-            
-            if (value.length >= 8) strength++;
-            if (/[a-z]/.test(value)) strength++;
-            if (/[A-Z]/.test(value)) strength++;
-            if (/[0-9]/.test(value)) strength++;
-            if (/[^a-zA-Z0-9]/.test(value)) strength++;
-            
-            let strengthClass = '';
-            let strengthLabel = '';
-            
-            if (strength < 2) {
-                strengthClass = 'strength-weak';
-                strengthLabel = '약함';
-                strengthFill.style.width = '20%';
-            } else if (strength < 4) {
-                strengthClass = 'strength-medium';
-                strengthLabel = '보통';
-                strengthFill.style.width = '60%';
-            } else {
-                strengthClass = 'strength-strong';
-                strengthLabel = '강함';
-                strengthFill.style.width = '100%';
-            }
-            
-            strengthFill.className = `strength-fill ${strengthClass}`;
-            strengthText.textContent = `비밀번호 강도: ${strengthLabel}`;
-            strengthText.className = `strength-text ${strengthClass}`;
-            
-            if (value.length < 4) {
+            if (password.value.length < 4) {
                 password.classList.add('error');
-                password.classList.remove('success');
                 error.textContent = '비밀번호는 8자 이상이어야 합니다.';
-                error.className = 'validation-message error';
                 return false;
             } else {
                 password.classList.remove('error');
                 password.classList.add('success');
-                error.className = 'validation-message';
+                error.textContent = '';
                 return true;
             }
         }
@@ -473,15 +363,12 @@
             
             if (confirmPassword.value && confirmPassword.value !== password.value) {
                 confirmPassword.classList.add('error');
-                confirmPassword.classList.remove('success');
                 error.textContent = '비밀번호가 일치하지 않습니다.';
-                error.className = 'validation-message error';
                 return false;
             } else if (confirmPassword.value) {
                 confirmPassword.classList.remove('error');
                 confirmPassword.classList.add('success');
-                error.textContent = '비밀번호가 일치합니다.';
-                error.className = 'validation-message success';
+                error.textContent = '';
                 return true;
             }
             return false;
@@ -539,11 +426,9 @@
             if (option === 'create') {
                 workspaceGroup.style.display = 'block';
                 inviteGroup.style.display = 'none';
-                document.getElementById('invite_code').value = '';
             } else {
                 workspaceGroup.style.display = 'none';
                 inviteGroup.style.display = 'block';
-                document.getElementById('workspace_name').value = '';
             }
             
             checkStep2Validity();
@@ -572,117 +457,27 @@
             selectWorkspaceOption('create');
         }
 
-        async function processSignup() {
-            const spinner = document.getElementById('loading-spinner');
-            const btnText = document.getElementById('btn-text');
-            const signupBtn = document.getElementById('signup-btn');
-            const errorMessage = document.getElementById('error-message');
-            
-            // 로딩 상태
-            signupBtn.disabled = true;
-            btnText.textContent = '처리중...';
-            spinner.style.display = 'inline-block';
-            errorMessage.style.display = 'none';
-            
-            // 폼 데이터 수집
-            const formData = {
-                name: document.getElementById('name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                password: document.getElementById('password').value,
-                role_id: parseInt(document.getElementById('role_id').value)
-            };
-            
-            // 워크스페이스 설정에 따라 추가 데이터
-            if (workspaceOption === 'create') {
-                formData.workspace_name = document.getElementById('workspace_name').value.trim();
-            } else {
-                formData.invite_code = document.getElementById('invite_code').value.trim();
-            }
-            
-            try {
-                // 🟢 실제 API 호출
-                const result = await signupUser(formData);
-                
-                if (result.success) {
-                    // 성공: 이메일 인증 요청
-                    await requestEmailVerification(formData.email);
-                    
-                    // 성공 UI 표시
-                    currentStep = 3;
-                    document.getElementById('progress-fill').style.width = '100%';
-                    
-                    document.getElementById('step2').classList.remove('active');
-                    document.getElementById('step2').classList.add('completed');
-                    document.getElementById('step3').classList.add('completed');
-                    
-                    document.getElementById('form-step-2').style.display = 'none';
-                    document.getElementById('success-message').style.display = 'block';
-                    signupBtn.style.display = 'none';
-                    
-                    // 워크스페이스 참여/생성에 따른 메시지
-                    const successMsg = workspaceOption === 'create' 
-                        ? '🎉 회원가입과 워크스페이스 생성이 완료되었습니다!'
-                        : '🎉 회원가입과 워크스페이스 참여 요청이 완료되었습니다!';
-                    
-                    document.querySelector('#success-message p').textContent = successMsg;
-                    
-                    // 2초 후 이메일 인증 페이지로 이동
-                    setTimeout(() => {
-                        window.location.href = 'signup-complete.html';
-                    }, 2000);
-                } else {
-                    // 실패: 에러 메시지 표시
-                    errorMessage.textContent = result.error;
-                    errorMessage.style.display = 'block';
-                    
-                    // 로딩 상태 원복
-                    signupBtn.disabled = false;
-                    btnText.textContent = '회원가입 완료';
-                    spinner.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Signup process error:', error);
-                errorMessage.textContent = '회원가입 중 오류가 발생했습니다. 다시 시도해주세요.';
-                errorMessage.style.display = 'block';
-                
-                // 로딩 상태 원복
-                signupBtn.disabled = false;
-                btnText.textContent = '회원가입 완료';
-                spinner.style.display = 'none';
-            }
+        // ============================
+        // 기타 함수들
+        // ============================
+        function requestInviteCode() {
+            alert('📨 초대 코드 요청 기능은 개발 중입니다.');
+        }
+
+        function goToLogin() {
+            window.location.href = 'login.html';
         }
 
         // ============================
         // 이벤트 리스너들
         // ============================
-        
-        // 입력 필드 실시간 검증
-        document.getElementById('name').addEventListener('input', () => {
-            validateName();
-            checkStep1Validity();
-        });
-        
-        document.getElementById('email').addEventListener('input', () => {
-            validateEmail();
-            checkStep1Validity();
-        });
-        
-        document.getElementById('password').addEventListener('input', () => {
-            validatePassword();
-            validatePasswordConfirm(); // 비밀번호 변경시 확인도 재검증
-            checkStep1Validity();
-        });
-        
-        document.getElementById('confirmPassword').addEventListener('input', () => {
-            validatePasswordConfirm();
-            checkStep1Validity();
-        });
-        
+        document.getElementById('name').addEventListener('input', checkStep1Validity);
+        document.getElementById('email').addEventListener('input', checkStep1Validity);
+        document.getElementById('password').addEventListener('input', checkStep1Validity);
+        document.getElementById('confirmPassword').addEventListener('input', checkStep1Validity);
         document.getElementById('role_id').addEventListener('change', checkStep1Validity);
         document.getElementById('terms-service').addEventListener('change', checkStep1Validity);
         document.getElementById('terms-privacy').addEventListener('change', checkStep1Validity);
-        
-        // 2단계 입력 필드들
         document.getElementById('workspace_name').addEventListener('input', checkStep2Validity);
         document.getElementById('invite_code').addEventListener('input', checkStep2Validity);
 
@@ -701,14 +496,19 @@
             }
         });
 
-        function goToLogin() {
-            window.location.href = 'login.html';
-        }
-
         // 초기 상태 설정
         document.addEventListener('DOMContentLoaded', function() {
             checkStep1Validity();
         });
+
+        // ============================
+        // 개발용 빠른 버튼 & 디버깅
+        // ============================
+        document.body.insertAdjacentHTML('beforeend', `
+            <button onclick="processSignup()" style="position:fixed; top:10px; right:10px; z-index:9999; background:red; color:white; padding:10px; border:none; border-radius:5px; cursor:pointer;">
+                빠른가입
+            </button>
+        `);
 
         // 개발자 도구용 디버깅
         window.debugSignup = {
@@ -723,17 +523,10 @@
                 checkStep1Validity();
                 console.log('테스트 데이터가 입력되었습니다.');
             },
-            testSignup: () => signupUser({
-                name: '테스트유저',
-                email: 'test@example.com',
-                password: 'test1234',
-                workspace_name: '테스트회사',
-                role_id: 2
-            }),
-            testInviteRequest: () => requestInviteCode()
+            quickSignup: () => processSignup()
         };
         
-        console.log('🔧 개발자 도구에서 debugSignup.fillTestData() 또는 debugSignup.testInviteRequest()를 사용하여 테스트할 수 있습니다.');
+        console.log('🔧 개발자 도구에서 debugSignup.fillTestData() 또는 debugSignup.quickSignup()을 사용하여 테스트할 수 있습니다.');
     </script>
 </body>
 </html>

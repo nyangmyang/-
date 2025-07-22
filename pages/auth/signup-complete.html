@@ -29,50 +29,47 @@
         <h1 class="title">회원가입 완료!</h1>
         <p class="subtitle">
             환영합니다! 🎉<br>
-            이메일 인증을 완료하면 워크스페이스를 시작할 수 있습니다.
+            이메일 인증 코드를 입력해주세요.
         </p>
 
         <!-- 이메일 정보 -->
         <div class="email-info">
             <div class="email-icon">📧</div>
-            <div class="email-title">인증 이메일을 발송했습니다</div>
+            <div class="email-title">인증 코드를 발송했습니다</div>
             <div class="email-address" id="user-email">user@example.com</div>
             <div class="email-note">
-                이메일함을 확인하고 인증 링크를 클릭해주세요.<br>
-                스팸함도 함께 확인해보세요.
+                위 이메일로 6자리 인증 코드를 보냈습니다.<br>
+                코드를 입력해주세요.
             </div>
         </div>
 
-        <!-- 단계 안내 -->
-        <div class="steps-guide">
-            <div class="steps-title">📋 다음 단계</div>
-            <div class="step-item">
-                <div class="step-number">1</div>
-                <div class="step-text">이메일함에서 인증 메일을 찾아주세요</div>
+        <!-- 인증 코드 입력 -->
+        <div class="verification-section">
+            <div class="verification-title">📱 인증 코드 입력</div>
+            <div class="code-inputs">
+                <input type="text" class="code-input" maxlength="1" id="code1">
+                <input type="text" class="code-input" maxlength="1" id="code2">
+                <input type="text" class="code-input" maxlength="1" id="code3">
+                <input type="text" class="code-input" maxlength="1" id="code4">
+                <input type="text" class="code-input" maxlength="1" id="code5">
+                <input type="text" class="code-input" maxlength="1" id="code6">
             </div>
-            <div class="step-item">
-                <div class="step-number">2</div>
-                <div class="step-text">"이메일 인증하기" 버튼을 클릭해주세요</div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">3</div>
-                <div class="step-text">인증 완료 후 로그인하여 워크스페이스를 시작하세요</div>
-            </div>
+            <div class="validation-message" id="code-error"></div>
         </div>
 
         <!-- 액션 버튼들 -->
         <div class="action-buttons">
-            <button class="btn btn-primary" onclick="openEmailApp()">
-                <span>📬 이메일 앱 열기</span>
+            <button class="btn btn-primary" onclick="verifyCode()" id="verify-btn">
+                <div class="loading-spinner" id="loading-spinner"></div>
+                <span id="verify-text">인증 완료</span>
             </button>
             
             <button class="btn btn-secondary" id="resend-btn" onclick="resendEmail()">
-                <div class="loading-spinner" id="loading-spinner"></div>
-                <span id="resend-text">이메일 다시 보내기</span>
+                <span id="resend-text">코드 다시 보내기</span>
             </button>
 
             <div class="resend-timer" id="resend-timer" style="display: none;">
-                이메일 재전송은 <span class="timer-text" id="timer-countdown">60</span>초 후 가능합니다
+                재전송은 <span class="timer-text" id="timer-countdown">60</span>초 후 가능합니다
             </div>
         </div>
 
@@ -91,30 +88,128 @@
         let resendTimer = 0;
         let timerInterval;
 
-        // 페이지 로드시 사용자 이메일 설정 (실제로는 서버에서 받아옴)
+        // ============================
+        // 초기화
+        // ============================
         document.addEventListener('DOMContentLoaded', function() {
-            // 실제로는 회원가입 시 입력한 이메일을 표시
-            const userEmail = 'user@example.com'; // 실제 이메일로 교체
+            const userEmail = 'user@example.com';
             document.getElementById('user-email').textContent = userEmail;
+            setupCodeInputs();
         });
 
-        // 이메일 앱 열기
-        function openEmailApp() {
-            // 모바일에서는 기본 메일앱 열기
-            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                window.location.href = 'mailto:';
-            } else {
-                // 데스크톱에서는 주요 이메일 서비스 선택 옵션 제공
-                const choice = confirm('이메일 서비스를 선택하세요:\n확인 - Gmail\n취소 - 다른 이메일 앱');
-                if (choice) {
-                    window.open('https://mail.google.com', '_blank');
-                } else {
-                    window.location.href = 'mailto:';
-                }
-            }
+        // ============================
+        // 인증 코드 입력 설정
+        // ============================
+        function setupCodeInputs() {
+            const inputs = document.querySelectorAll('.code-input');
+            
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    // 숫자만 입력 허용
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // 다음 입력으로 자동 이동
+                    if (this.value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    
+                    // 모든 코드 입력 시 자동 검증
+                    checkAllInputsFilled();
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    // 백스페이스로 이전 입력으로 이동
+                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                    
+                    // 엔터키로 인증
+                    if (e.key === 'Enter') {
+                        verifyCode();
+                    }
+                });
+            });
         }
 
+        function checkAllInputsFilled() {
+            const inputs = document.querySelectorAll('.code-input');
+            const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+            
+            document.getElementById('verify-btn').disabled = !allFilled;
+            
+            return allFilled;
+        }
+
+        function getEnteredCode() {
+            const inputs = document.querySelectorAll('.code-input');
+            return Array.from(inputs).map(input => input.value).join('');
+        }
+
+        // ============================
+        // 인증 코드 검증 (개발용)
+        // ============================
+        function verifyCode() {
+            const code = getEnteredCode();
+            const verifyBtn = document.getElementById('verify-btn');
+            const verifyText = document.getElementById('verify-text');
+            const spinner = document.getElementById('loading-spinner');
+            const errorMsg = document.getElementById('code-error');
+            
+            if (code.length !== 6) {
+                showError('6자리 인증 코드를 모두 입력해주세요.');
+                return;
+            }
+
+            // 로딩 상태
+            verifyBtn.disabled = true;
+            verifyText.textContent = '인증 중...';
+            spinner.style.display = 'inline-block';
+            errorMsg.textContent = '';
+
+            // 개발용: 간단한 검증 (123456 또는 임의 성공)
+            setTimeout(() => {
+                if (code === '123456' || Math.random() > 0.3) { // 70% 성공률
+                    // 성공
+                    verifyText.textContent = '인증 완료!';
+                    spinner.style.display = 'none';
+                    
+                    setTimeout(() => {
+                        alert('🎉 이메일 인증이 완료되었습니다!');
+                        window.location.href = 'account-setup.html';
+                    }, 500);
+                } else {
+                    // 실패
+                    showError('인증 코드가 올바르지 않습니다. 다시 확인해주세요.');
+                    
+                    // 상태 원복
+                    verifyBtn.disabled = false;
+                    verifyText.textContent = '인증 완료';
+                    spinner.style.display = 'none';
+                    
+                    // 입력 필드 초기화
+                    clearCodeInputs();
+                }
+            }, 1500);
+        }
+
+        function showError(message) {
+            const errorMsg = document.getElementById('code-error');
+            errorMsg.textContent = message;
+            errorMsg.style.color = '#ef4444';
+            errorMsg.style.fontSize = '14px';
+            errorMsg.style.marginTop = '8px';
+        }
+
+        function clearCodeInputs() {
+            document.querySelectorAll('.code-input').forEach(input => {
+                input.value = '';
+            });
+            document.querySelector('.code-input').focus();
+        }
+
+        // ============================
         // 이메일 재전송
+        // ============================
         function resendEmail() {
             if (resendTimer > 0) {
                 return;
@@ -122,27 +217,21 @@
 
             const resendBtn = document.getElementById('resend-btn');
             const resendText = document.getElementById('resend-text');
-            const spinner = document.getElementById('loading-spinner');
-            const timerElement = document.getElementById('resend-timer');
 
             // 로딩 상태
             resendBtn.disabled = true;
             resendText.textContent = '전송 중...';
-            spinner.style.display = 'inline-block';
 
-            // 가짜 재전송 처리
             setTimeout(() => {
-                spinner.style.display = 'none';
-                resendText.textContent = '이메일을 다시 보냈습니다!';
+                resendText.textContent = '코드를 다시 보냈습니다!';
                 
                 setTimeout(() => {
-                    resendText.textContent = '이메일 다시 보내기';
+                    resendText.textContent = '코드 다시 보내기';
                     startResendTimer();
                 }, 2000);
             }, 1500);
         }
 
-        // 재전송 타이머 시작
         function startResendTimer() {
             resendTimer = 60;
             const resendBtn = document.getElementById('resend-btn');
@@ -164,48 +253,133 @@
             }, 1000);
         }
 
-        // 고객 지원
+        // ============================
+        // 기타 함수들
+        // ============================
         function showSupport() {
             alert('📞 고객 지원\n\n이메일: support@workspace.com\n전화: 1588-1234\n운영시간: 평일 09:00-18:00');
         }
 
-        // 이메일 변경
         function changeEmail() {
             const newEmail = prompt('새로운 이메일 주소를 입력하세요:');
             if (newEmail && newEmail.includes('@')) {
                 if (confirm(`이메일을 ${newEmail}로 변경하시겠습니까?`)) {
                     document.getElementById('user-email').textContent = newEmail;
-                    alert('✅ 이메일이 변경되었습니다.\n새로운 인증 메일을 발송했습니다.');
+                    alert('✅ 이메일이 변경되었습니다.\n새로운 인증 코드를 발송했습니다.');
+                    clearCodeInputs();
                 }
             } else if (newEmail) {
                 alert('올바른 이메일 주소를 입력해주세요.');
             }
         }
 
-        // 로그인 페이지로 이동
         function goToLogin() {
-            if (confirm('로그인 페이지로 이동하시겠습니까?\n(이메일 인증을 완료한 후 로그인하세요)')) {
-                alert('로그인 페이지로 이동합니다.');
-                // 실제로는 로그인 페이지로 리다이렉트
-                // window.location.href = '/login';
+            if (confirm('로그인 페이지로 이동하시겠습니까?')) {
+                window.location.href = 'login.html';
             }
         }
 
-        // 초기 타이머 시작 (재전송 남용 방지)
+        // ============================
+        // 초기 설정
+        // ============================
         setTimeout(() => {
             startResendTimer();
         }, 1000);
 
-        // 인증 완료 시뮬레이션 (실제로는 서버에서 인증 상태 확인)
-        setTimeout(() => {
-            if (Math.random() > 0.7) { // 30% 확률로 자동 인증 완료 시뮬레이션
-                if (confirm('🎉 이메일 인증이 완료되었습니다!\n계정 설정 페이지로 이동하시겠습니까?')) {
-                    alert('계정 설정 페이지로 이동합니다.');
-                    // 실제로는 계정 설정 페이지로 리다이렉트
-                    // window.location.href = '/account-setup';
-                }
-            }
-        }, 10000); // 10초 후
+        // ============================
+        // 개발용 빠른 버튼
+        // ============================
+        document.body.insertAdjacentHTML('beforeend', `
+            <button onclick="quickVerify()" style="position:fixed; top:10px; right:10px; z-index:9999; background:green; color:white; padding:10px; border:none; border-radius:5px; cursor:pointer;">
+                빠른인증
+            </button>
+        `);
+
+        function quickVerify() {
+            // 123456 자동 입력
+            const inputs = document.querySelectorAll('.code-input');
+            '123456'.split('').forEach((digit, index) => {
+                inputs[index].value = digit;
+            });
+            checkAllInputsFilled();
+            
+            setTimeout(() => {
+                verifyCode();
+            }, 500);
+        }
+
+        // 개발자 도구용
+        window.debugVerify = {
+            fillCode: (code = '123456') => {
+                const inputs = document.querySelectorAll('.code-input');
+                code.split('').forEach((digit, index) => {
+                    if (inputs[index]) inputs[index].value = digit;
+                });
+                checkAllInputsFilled();
+            },
+            quickVerify: quickVerify
+        };
+        
+        console.log('🔧 개발자 도구에서 debugVerify.fillCode() 또는 debugVerify.quickVerify()를 사용하여 테스트할 수 있습니다.');
     </script>
+
+    <style>
+        /* 인증 코드 입력 스타일 */
+        .verification-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .verification-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .code-inputs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .code-input {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .code-input:valid {
+            border-color: #10b981;
+        }
+
+        @media (max-width: 480px) {
+            .code-inputs {
+                gap: 8px;
+            }
+            
+            .code-input {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+    </style>
 </body>
 </html>
