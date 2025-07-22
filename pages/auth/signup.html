@@ -178,11 +178,12 @@
 
                     <div class="workspace-option" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease;" onclick="selectWorkspaceOption('join')">
                         <div class="option-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                            <div class="option-icon" style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: linear-gradient(135deg, #0ea5e9, #2563eb); color: white;">👥</div>
+                            <div class="option-icon" style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: linear-gradient(135deg, #10b981, #059669); color: white;">📝</div>
                             <div class="option-title" style="font-size: 16px; font-weight: bold; color: #1e293b;">기존 워크스페이스 참여</div>
                         </div>
                         <div class="option-description" style="color: #64748b; font-size: 14px; line-height: 1.4;">
-                            초대 코드를 통해 기존 팀에 참여하세요.
+                            초대 코드를 통해 기존 팀에 참여하세요.<br>
+                            <span style="color: #f59e0b; font-size: 12px;">관리자 승인 후 참여 가능</span>
                         </div>
                     </div>
                 </div>
@@ -201,17 +202,34 @@
                     <div class="validation-message" id="workspace-error"></div>
                 </div>
 
-                <!-- 초대 코드 입력 필드 -->
+                <!-- 초대 코드 입력 필드 + 요청 버튼 -->
                 <div class="form-group" id="invite-code-group" style="display: none;">
                     <label class="form-label" for="invite_code">
                         초대 코드 <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="invite_code" 
-                        class="form-input" 
-                        placeholder="초대 코드를 입력하세요 (예: XYZ123)"
-                    >
+                    
+                    <!-- 초대 코드 입력과 요청 버튼을 나란히 배치 -->
+                    <div style="display: flex; gap: 8px; align-items: stretch;">
+                        <input 
+                            type="text" 
+                            id="invite_code" 
+                            class="form-input" 
+                            placeholder="초대 코드를 입력하세요 (예: XYZ123)"
+                            style="flex: 1;"
+                        >
+                        <button 
+                            type="button" 
+                            class="btn btn-secondary" 
+                            onclick="requestInviteCode()"
+                            style="white-space: nowrap; padding: 0 16px; font-size: 14px;"
+                        >
+                            📨 요청하기
+                        </button>
+                    </div>
+                    
+                    <div class="form-help" style="color: #64748b; font-size: 12px; margin-top: 4px;">
+                        💡 초대 코드가 없다면 "요청하기" 버튼을 눌러 워크스페이스 관리자에게 참여 요청을 보내세요.
+                    </div>
                     <div class="validation-message" id="invite-error"></div>
                 </div>
             </div>
@@ -277,6 +295,80 @@
             } catch (error) {
                 console.error('Email verification request failed:', error);
                 return false;
+            }
+        }
+
+        // 🟢 새로 추가된 초대 코드 요청 함수
+        async function requestInviteCode() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            // 필수 정보 확인
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const roleId = document.getElementById('role_id').value;
+            
+            if (!name || !email || !roleId) {
+                alert('⚠️ 먼저 기본 정보(이름, 이메일, 직급)를 입력해주세요.');
+                return;
+            }
+            
+            // 워크스페이스 이름 또는 ID 입력받기
+            const workspaceInfo = prompt('참여하고 싶은 워크스페이스 이름을 입력하세요:', '예: 스타트업팀');
+            if (!workspaceInfo) {
+                return;
+            }
+            
+            // 로딩 상태
+            btn.disabled = true;
+            btn.textContent = '📤 요청 중...';
+            
+            try {
+                // 워크스페이스 참여 요청 API 호출
+                const response = await fetch(`${API_BASE_URL}/workspaces/1/join-request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        role_id: parseInt(roleId),
+                        workspace_name: workspaceInfo,
+                        is_contractor: false,
+                        start_date: new Date().toISOString().split('T')[0],
+                        end_date: "2025-12-31",
+                        message: `안녕하세요, ${name}입니다. "${workspaceInfo}" 워크스페이스에 참여하고 싶습니다.`
+                    })
+                });
+                
+                if (response.ok) {
+                    // 성공 메시지
+                    alert(`✅ 참여 요청이 전송되었습니다!\n\n📧 관리자가 검토 후 초대 코드를 이메일로 보내드립니다.\n받은 초대 코드를 위 입력창에 입력하세요.`);
+                    
+                    // 입력 필드에 포커스
+                    document.getElementById('invite_code').focus();
+                } else {
+                    const errorData = await response.json();
+                    alert(`❌ 요청 실패: ${errorData.detail || '알 수 없는 오류가 발생했습니다.'}`);
+                }
+                
+            } catch (error) {
+                console.error('Invite request error:', error);
+                
+                // 개발/테스트용 대체 처리
+                const confirmed = confirm(`🔧 서버 연결에 실패했습니다.\n\n개발/테스트용으로 샘플 초대 코드를 사용하시겠습니까?`);
+                
+                if (confirmed) {
+                    const sampleCode = 'REQ' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                    document.getElementById('invite_code').value = sampleCode;
+                    checkStep2Validity();
+                    alert(`📝 테스트용 초대 코드: ${sampleCode}\n\n실제 환경에서는 관리자가 승인 후 이메일로 전송됩니다.`);
+                }
+            } finally {
+                // 버튼 상태 복구
+                btn.disabled = false;
+                btn.textContent = originalText;
             }
         }
 
@@ -360,10 +452,10 @@
             strengthText.textContent = `비밀번호 강도: ${strengthLabel}`;
             strengthText.className = `strength-text ${strengthClass}`;
             
-            if (value.length < 4) { // API 명세서에 맞게 최소 길이 조정
+            if (value.length < 4) {
                 password.classList.add('error');
                 password.classList.remove('success');
-                error.textContent = '비밀번호는 4자 이상이어야 합니다.';
+                error.textContent = '비밀번호는 8자 이상이어야 합니다.';
                 error.className = 'validation-message error';
                 return false;
             } else {
@@ -527,9 +619,16 @@
                     document.getElementById('success-message').style.display = 'block';
                     signupBtn.style.display = 'none';
                     
+                    // 워크스페이스 참여/생성에 따른 메시지
+                    const successMsg = workspaceOption === 'create' 
+                        ? '🎉 회원가입과 워크스페이스 생성이 완료되었습니다!'
+                        : '🎉 회원가입과 워크스페이스 참여 요청이 완료되었습니다!';
+                    
+                    document.querySelector('#success-message p').textContent = successMsg;
+                    
                     // 2초 후 이메일 인증 페이지로 이동
                     setTimeout(() => {
-                        window.location.href = 'page3_signup_complete.html';
+                        window.location.href = 'signup-complete.html';
                     }, 2000);
                 } else {
                     // 실패: 에러 메시지 표시
@@ -603,7 +702,7 @@
         });
 
         function goToLogin() {
-            window.location.href = 'page1_login.html';
+            window.location.href = 'login.html';
         }
 
         // 초기 상태 설정
@@ -630,10 +729,11 @@
                 password: 'test1234',
                 workspace_name: '테스트회사',
                 role_id: 2
-            })
+            }),
+            testInviteRequest: () => requestInviteCode()
         };
         
-        console.log('🔧 개발자 도구에서 debugSignup.fillTestData() 또는 debugSignup.testSignup()을 사용하여 테스트할 수 있습니다.');
+        console.log('🔧 개발자 도구에서 debugSignup.fillTestData() 또는 debugSignup.testInviteRequest()를 사용하여 테스트할 수 있습니다.');
     </script>
 </body>
 </html>

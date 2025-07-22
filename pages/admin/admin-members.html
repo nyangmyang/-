@@ -187,26 +187,8 @@
                     requestDate: '2024-01-15',
                     inviteCode: 'ABC123',
                     isContractor: false
-                },
-                {
-                    id: 2,
-                    name: '이계약',
-                    email: 'contractor@example.com',
-                    role: '대리',
-                    requestDate: '2024-01-14',
-                    inviteCode: 'XYZ789',
-                    isContractor: true,
-                    contractPeriod: '2024-01-15 ~ 2024-06-30'
-                },
-                {
-                    id: 3,
-                    name: '박지원',
-                    email: 'support@example.com',
-                    role: '사원',
-                    requestDate: '2024-01-13',
-                    inviteCode: 'DEF456',
-                    isContractor: false
                 }
+               
             ];
 
             renderMemberCards('pending-list', mockPendingMembers, 'pending');
@@ -224,37 +206,6 @@
                     lastActivity: '방금 전',
                     isAdmin: true,
                     isContractor: false
-                },
-                {
-                    id: 102,
-                    name: '김개발',
-                    email: 'dev@example.com',
-                    role: '과장',
-                    joinDate: '2023-08-15',
-                    lastActivity: '1시간 전',
-                    isAdmin: false,
-                    isContractor: false
-                },
-                {
-                    id: 103,
-                    name: '이디자인',
-                    email: 'design@example.com',
-                    role: '대리',
-                    joinDate: '2023-10-01',
-                    lastActivity: '3시간 전',
-                    isAdmin: false,
-                    isContractor: false
-                },
-                {
-                    id: 104,
-                    name: '박프리랜서',
-                    email: 'freelancer@example.com',
-                    role: '사원',
-                    joinDate: '2024-01-01',
-                    lastActivity: '1일 전',
-                    isAdmin: false,
-                    isContractor: true,
-                    contractPeriod: '2024-01-01 ~ 2024-12-31'
                 }
             ];
 
@@ -629,6 +580,7 @@
         // 추가 기능들
         // ============================
         
+
         function inviteMembers() {
             const inviteCode = Math.random().toString(36).substr(2, 6).toUpperCase();
             
