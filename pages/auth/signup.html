@@ -23,27 +23,6 @@
             <p class="subtitle">워크스페이스에 참여하여<br>팀과 함께 성장하세요</p>
         </div>
 
-        <!-- 진행 표시기 -->
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-        </div>
-        <div class="step-indicators">
-            <div class="step active" id="step1">
-                <span>1️⃣</span>
-                <span>기본 정보</span>
-            </div>
-            <div class="step" id="step2">
-                <span>2️⃣</span>
-                <span>워크스페이스</span>
-            </div>
-            <div class="step" id="step3">
-                <span>3️⃣</span>
-                <span>완료</span>
-            </div>
-        </div>
-
-    
-
         <!-- 에러 메시지 -->
         <div class="error-message" id="error-message" style="display: none; background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 20px;">
             에러가 발생했습니다.
@@ -109,21 +88,6 @@
                     <div class="validation-message" id="confirmPassword-error"></div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="role_id">
-                        직급 <span class="required">*</span>
-                    </label>
-                    <select id="role_id" class="form-input" required>
-                        <option value="">직급을 선택하세요</option>
-                        <option value="1">사원</option>
-                        <option value="2">대리</option>
-                        <option value="3">과장</option>
-                        <option value="4">팀장</option>
-                        <option value="5">부장</option>
-                        <option value="6">이사</option>
-                    </select>
-                    <div class="validation-message" id="role-error"></div>
-                </div>
 
                 <div class="terms-section">
                     <div class="terms-item">
@@ -147,79 +111,6 @@
                 </div>
             </div>
 
-            <!-- 2단계: 워크스페이스 설정 -->
-            <div class="form-step" id="form-step-2" style="display: none;">
-                <div style="margin-bottom: 25px;">
-                    <h3 style="font-size: 18px; margin-bottom: 15px; color: #1e293b;">워크스페이스 설정</h3>
-                    <p style="color: #64748b; font-size: 14px;">새 워크스페이스를 생성하거나 초대 코드로 기존 워크스페이스에 참여하세요</p>
-                </div>
-
-                <div class="workspace-options" style="margin-bottom: 25px;">
-                    <div class="workspace-option" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 15px; cursor: pointer; transition: all 0.3s ease;" onclick="selectWorkspaceOption('create')">
-                        <div class="option-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                            <div class="option-icon" style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: linear-gradient(135deg, #0ea5e9, #2563eb); color: white;">➕</div>
-                            <div class="option-title" style="font-size: 16px; font-weight: bold; color: #1e293b;">새 워크스페이스 만들기</div>
-                        </div>
-                        <div class="option-description" style="color: #64748b; font-size: 14px; line-height: 1.4;">
-                            새로운 팀을 만들고 동료들을 초대하여 함께 협업하세요.
-                        </div>
-                    </div>
-
-                    <div class="workspace-option" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease;" onclick="selectWorkspaceOption('join')">
-                        <div class="option-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                            <div class="option-icon" style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: linear-gradient(135deg, #10b981, #059669); color: white;">📝</div>
-                            <div class="option-title" style="font-size: 16px; font-weight: bold; color: #1e293b;">기존 워크스페이스 참여</div>
-                        </div>
-                        <div class="option-description" style="color: #64748b; font-size: 14px; line-height: 1.4;">
-                            초대 코드를 통해 기존 팀에 참여하세요.<br>
-                            <span style="color: #f59e0b; font-size: 12px;">관리자 승인 후 참여 가능</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 새 워크스페이스 생성 필드 -->
-                <div class="form-group" id="workspace-name-group">
-                    <label class="form-label" for="workspace_name">
-                        워크스페이스 이름 <span class="required">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="workspace_name" 
-                        class="form-input" 
-                        placeholder="회사명 또는 팀명을 입력하세요"
-                    >
-                    <div class="validation-message" id="workspace-error"></div>
-                </div>
-
-                <!-- 초대 코드 입력 필드 -->
-                <div class="form-group" id="invite-code-group" style="display: none;">
-                    <label class="form-label" for="invite_code">
-                        초대 코드 <span class="required">*</span>
-                    </label>
-                    <div style="display: flex; gap: 8px; align-items: stretch;">
-                        <input 
-                            type="text" 
-                            id="invite_code" 
-                            class="form-input" 
-                            placeholder="초대 코드를 입력하세요 (예: XYZ123)"
-                            style="flex: 1;"
-                        >
-                        <button 
-                            type="button" 
-                            class="btn btn-secondary" 
-                            onclick="requestInviteCode()"
-                            style="white-space: nowrap; padding: 0 16px; font-size: 14px;"
-                        >
-                            📨 요청하기
-                        </button>
-                    </div>
-                    <div class="form-help" style="color: #64748b; font-size: 12px; margin-top: 4px;">
-                        💡 초대 코드가 없다면 "요청하기" 버튼을 눌러 워크스페이스 관리자에게 참여 요청을 보내세요.
-                    </div>
-                    <div class="validation-message" id="invite-error"></div>
-                </div>
-            </div>
-
             <button type="submit" class="signup-button" id="signup-btn" disabled>
                 <div class="loading-spinner" id="loading-spinner"></div>
                 <span id="btn-text">다음 단계</span>
@@ -236,14 +127,14 @@
         // ============================
         // 변수 설정
         // ============================
-        const API_BASE_URL = 'http://localhost:8000';
+        const API_BASE_URL = 'http://localhost:8080';
         let currentStep = 1;
         let workspaceOption = 'create';
 
         // ============================
         // API 호출 함수들 (주석처리 - 나중에 사용)
         // ============================
-        /*
+        
         async function signupUser(userData) {
             try {
                 const response = await fetch(`${API_BASE_URL}/auth/signup`, {
@@ -264,6 +155,10 @@
             } catch (error) {
                 console.error('Signup API Error:', error);
                 return { success: false, error: '서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.' };
+
+                // 개발모드에서는 성공으로 처리
+                //alert('🎉 회원가입 완료!\n개발모드에서 가입되었습니다.');
+                //window.location.href = '../index.html';
             }
         }
 
@@ -282,7 +177,7 @@
                 return false;
             }
         }
-        */
+        
 
         // ============================
         // 빠른 테스트용 함수 (개발모드)
@@ -291,17 +186,46 @@
             const spinner = document.getElementById('loading-spinner');
             const btnText = document.getElementById('btn-text');
             const signupBtn = document.getElementById('signup-btn');
-            
-            // 로딩 애니메이션
+            const errorBox = document.getElementById('error-message');
+
+            // 로딩 UI 표시
             signupBtn.disabled = true;
             btnText.textContent = '처리중...';
             spinner.style.display = 'inline-block';
-            
-            // 1초 후 성공
-            setTimeout(() => {
-                alert('🎉 회원가입 완료!');
-                window.location.href = 'account-setup.html';
-            }, 1000);
+            errorBox.style.display = 'none';
+
+            // 입력값 수집
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // 비밀번호 일치 검사
+            if (password !== confirmPassword) {
+                errorBox.textContent = '비밀번호가 일치하지 않습니다.';
+                errorBox.style.display = 'block';
+                btnText.textContent = '회원가입';
+                spinner.style.display = 'none';
+                signupBtn.disabled = false;
+                return;
+            }
+
+            // API에 전달할 JSON
+            const payload = { name, email, password };
+
+            // API 호출
+            const result = await signupUser(payload);
+
+            if (result.success) {
+                alert('🎉 회원가입 완료!\n' + result.data.message);
+                window.location.href = '../index.html'; // 다음 페이지로 이동
+            } else {
+                errorBox.textContent = result.error;
+                errorBox.style.display = 'block';
+                btnText.textContent = '회원가입';
+                spinner.style.display = 'none';
+                signupBtn.disabled = false;
+            }
         }
 
         // ============================
@@ -379,11 +303,12 @@
             const email = validateEmail();
             const password = validatePassword();
             const confirmPassword = validatePasswordConfirm();
-            const role = document.getElementById('role_id').value !== '';
+            // const role = document.getElementById('role_id').value !== '';
             const termsService = document.getElementById('terms-service').checked;
             const termsPrivacy = document.getElementById('terms-privacy').checked;
             
-            const isValid = name && email && password && confirmPassword && role && termsService && termsPrivacy;
+            // const isValid = name && email && password && confirmPassword && role && termsService && termsPrivacy;
+            const isValid = name && email && password && confirmPassword && termsService && termsPrivacy;
             document.getElementById('signup-btn').disabled = !isValid;
             return isValid;
         }
@@ -460,9 +385,10 @@
         // ============================
         // 기타 함수들
         // ============================
-        function requestInviteCode() {
-            alert('📨 초대 코드 요청 기능은 개발 중입니다.');
-        }
+
+        // ============================
+        // 워크스페이스 초대 요청 함수
+        // ============================
 
         function goToLogin() {
             window.location.href = 'login.html';
@@ -475,25 +401,19 @@
         document.getElementById('email').addEventListener('input', checkStep1Validity);
         document.getElementById('password').addEventListener('input', checkStep1Validity);
         document.getElementById('confirmPassword').addEventListener('input', checkStep1Validity);
-        document.getElementById('role_id').addEventListener('change', checkStep1Validity);
+        // document.getElementById('role_id').addEventListener('change', checkStep1Validity);
         document.getElementById('terms-service').addEventListener('change', checkStep1Validity);
         document.getElementById('terms-privacy').addEventListener('change', checkStep1Validity);
-        document.getElementById('workspace_name').addEventListener('input', checkStep2Validity);
-        document.getElementById('invite_code').addEventListener('input', checkStep2Validity);
+        // document.getElementById('workspace_name').addEventListener('input', checkStep2Validity);
+        // document.getElementById('invite_code').addEventListener('input', checkStep2Validity);
 
         // 폼 제출 처리
         document.getElementById('signup-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            if (currentStep === 1) {
-                if (checkStep1Validity()) {
-                    nextStep();
-                }
-            } else if (currentStep === 2) {
-                if (checkStep2Validity()) {
+            if (checkStep1Validity()) {
                     processSignup();
                 }
-            }
         });
 
         // 초기 상태 설정
@@ -501,32 +421,6 @@
             checkStep1Validity();
         });
 
-        // ============================
-        // 개발용 빠른 버튼 & 디버깅
-        // ============================
-        document.body.insertAdjacentHTML('beforeend', `
-            <button onclick="processSignup()" style="position:fixed; top:10px; right:10px; z-index:9999; background:red; color:white; padding:10px; border:none; border-radius:5px; cursor:pointer;">
-                빠른가입
-            </button>
-        `);
-
-        // 개발자 도구용 디버깅
-        window.debugSignup = {
-            fillTestData: () => {
-                document.getElementById('name').value = '홍길동';
-                document.getElementById('email').value = 'test@example.com';
-                document.getElementById('password').value = 'test1234';
-                document.getElementById('confirmPassword').value = 'test1234';
-                document.getElementById('role_id').value = '2';
-                document.getElementById('terms-service').checked = true;
-                document.getElementById('terms-privacy').checked = true;
-                checkStep1Validity();
-                console.log('테스트 데이터가 입력되었습니다.');
-            },
-            quickSignup: () => processSignup()
-        };
-        
-        console.log('🔧 개발자 도구에서 debugSignup.fillTestData() 또는 debugSignup.quickSignup()을 사용하여 테스트할 수 있습니다.');
     </script>
 </body>
 </html>

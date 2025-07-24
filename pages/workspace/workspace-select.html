@@ -116,7 +116,7 @@
                             기존 워크스페이스에 참여하세요
                         </div>
                     </div>
-
+                    <!-- 세로형 입력 폼으로 수정 -->
                     <div class="form-group">
                         <label class="form-label" for="invite-code">
                             초대 코드 <span style="color: #ef4444;">*</span>
@@ -137,35 +137,16 @@
                         </label>
                         <select id="role-name" class="form-input">
                             <option value="">역할을 선택하세요</option>
-                            <option value="개발자">개발자</option>
-                            <option value="디자이너">디자이너</option>
-                            <option value="PM">프로젝트 매니저</option>
-                            <option value="기획자">기획자</option>
-                            <option value="마케터">마케터</option>
-                            <option value="QA">QA 엔지니어</option>
-                            <option value="데이터 분석가">데이터 분석가</option>
-                            <option value="대리">대리</option>
-                            <option value="팀원">팀원</option>
-                            <option value="인턴">인턴</option>
-                            <option value="기타">기타</option>
+                            <option value="1">사원</option>
+                            <option value="2">대리</option>
+                            <option value="3">과장</option>
+                            <option value="4">팀장</option>
+                            <option value="5">부장</option>
+                            <option value="6">이사</option>
                         </select>
                     </div>
 
-                    <!-- 기타 선택 시 나타나는 입력 필드 -->
-                    <div class="form-group" id="custom-role-group" style="display: none;">
-                        <label class="form-label" for="custom-role">
-                            역할 직접 입력 <span style="color: #ef4444;">*</span>
-                        </label>
-                        <input 
-                            type="text" 
-                            id="custom-role" 
-                            class="form-input" 
-                            placeholder="역할을 직접 입력하세요"
-                            maxlength="20"
-                        >
-                    </div>
-                </div>
-
+                  
                 <div class="button-group">
                     <button class="btn btn-primary" id="join-workspace-btn" onclick="joinWorkspace()" disabled>
                         <div class="loading-spinner" id="join-spinner"></div>
@@ -206,24 +187,6 @@
                 role: 'admin',
                 status: 'active',
                 last_activity: '2시간 전'
-            },
-            {
-                id: 2,
-                name: '📱 모바일팀',
-                description: '모바일 앱 개발 전담팀',
-                member_count: 8,
-                role: 'member',
-                status: 'active',
-                last_activity: '1일 전'
-            },
-            {
-                id: 3,
-                name: '🎨 디자인스튜디오',
-                description: '크리에이티브 디자인 작업',
-                member_count: 5,
-                role: 'member',
-                status: 'active',
-                last_activity: '3일 전'
             }
         ];
 
@@ -627,7 +590,7 @@
         async function joinWorkspace() {
             const inviteCode = document.getElementById('invite-code').value.trim();
             const roleName = document.getElementById('role-name').value.trim();
-            const customRole = document.getElementById('custom-role').value.trim();
+            
             
             if (!inviteCode) {
                 alert('초대 코드를 입력해주세요.');
@@ -639,13 +602,8 @@
                 return;
             }
 
-            // 기타 선택 시 커스텀 역할 체크
-            if (roleName === '기타' && !customRole) {
-                alert('역할을 직접 입력해주세요.');
-                return;
-            }
 
-            const finalRoleName = roleName === '기타' ? customRole : roleName;
+            const finalRoleName = roleName; //변수 수정하기 귀찮아서 걍 이러케 할게욤 ㅋㅋㅋㅋㅋㅋ *기타 삭제제
 
             const joinBtn = event.target;
             const btnText = document.getElementById('join-btn-text');
@@ -690,8 +648,8 @@
         function clearJoinForm() {
             document.getElementById('invite-code').value = '';
             document.getElementById('role-name').value = '';
-            document.getElementById('custom-role').value = '';
-            document.getElementById('custom-role-group').style.display = 'none';
+            document.getElementById('join-workspace-btn').disabled = true;
+            
         }
 
         // ============================
@@ -718,15 +676,7 @@
 
         // 역할 선택 변경 시 커스텀 입력 필드 표시/숨김
         function handleRoleChange() {
-            const roleSelect = document.getElementById('role-name');
-            const customRoleGroup = document.getElementById('custom-role-group');
-            
-            if (roleSelect.value === '기타') {
-                customRoleGroup.style.display = 'block';
-            } else {
-                customRoleGroup.style.display = 'none';
-            }
-            
+    
             // 폼 유효성 검사 업데이트
             validateJoinForm();
         }
@@ -736,16 +686,10 @@
             const joinBtn = document.getElementById('join-workspace-btn');
             const inviteCode = document.getElementById('invite-code').value.trim();
             const roleName = document.getElementById('role-name').value.trim();
-            const customRole = document.getElementById('custom-role').value.trim();
-            
-            let isValid = inviteCode.length >= 3 && roleName.length > 0;
-            
-            // 기타 선택 시 커스텀 역할 입력 확인
-            if (roleName === '기타') {
-                isValid = isValid && customRole.length > 0;
-            }
-            
+           
+            let isValid = inviteCode.length >= 3 && roleName.length > 0; 
             joinBtn.disabled = !isValid;
+       
         }
 
         // 입력 필드 실시간 검증
@@ -761,7 +705,6 @@
         });
 
         document.getElementById('role-name').addEventListener('change', handleRoleChange);
-        document.getElementById('custom-role').addEventListener('input', validateJoinForm);
 
         // 엔터키 처리
         document.addEventListener('keypress', function(e) {

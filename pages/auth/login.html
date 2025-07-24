@@ -110,8 +110,8 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        email: email,
-                        password: password
+                        email: email,            // <- 정확히 email
+                        password: password       // <- 정확히 password
                     })
                 });
 
@@ -197,7 +197,9 @@
                     
                     // 2초 후 워크스페이스로 이동
                     setTimeout(() => {
-                        window.location.href = 'page8_workspace_main.html';
+                        // window.location.href = 'page8_workspace_main.html';
+                        // window.location.href = '../workspace/workspace-main.html';
+                        window.location.href = '../workspace/workspace-select.html';
                     }, 2000);
                 } else {
                     // 실패: 에러 메시지 표시
@@ -247,7 +249,7 @@
 
         // 회원가입 페이지로 이동
         function goToSignup() {
-            window.location.href = 'page6_signup.html';
+            window.location.href = 'signup.html';
         }
 
         // 비밀번호 찾기 페이지로 이동
