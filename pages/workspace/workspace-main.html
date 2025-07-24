@@ -60,7 +60,7 @@
             </div>
             <div class="header-right">
                 <span class="channel-badge public" id="channel-type-badge">🌍 공개</span>
-                <button class="admin-btn" id="workspace-admin-btn" onclick="goToWorkspaceSettings()" title="워크스페이스 관리자 페이지" style="display: none;">⚙️</button>
+                <button class="admin-btn" id="workspace-admin-btn" onclick="goToAdminPage()" title="관리자 페이지" style="display: none;">👑 관리자</button>
             </div>
         </header>
 
@@ -443,7 +443,7 @@
 
                 // 관리자인 경우만 워크스페이스 설정 버튼 표시
                 if (userInfo.is_workspace_admin) {
-                    document.getElementById('workspace-settings-btn').style.display = 'block';
+                    document.getElementById('workspace-admin-btn').style.display = 'block';
                 }
 
                 // 병렬로 데이터 로딩
