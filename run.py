@@ -1,5 +1,6 @@
 import sys, os
 import uvicorn
+from app.main import app
 
 if __name__ == "__main__":
     base_dir = os.path.abspath(os.path.dirname(__file__))  # 현재 스크립트 위치 절대경로
@@ -12,4 +13,4 @@ if __name__ == "__main__":
         port=8000,
         reload=True,
         log_level="info"
-    )
+    ) 
