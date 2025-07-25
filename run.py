@@ -1,5 +1,8 @@
 import uvicorn
-from app.main import app
+import os, sys
+
+file_path = os.path.abspath("app/main.py")
+uvicorn.run(file_path + ":app", ...)
 
 if __name__ == "__main__":
     uvicorn.run(
