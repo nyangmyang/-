@@ -1,3 +1,7 @@
+
+import sys, os
+base_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(base_dir + "/../..")
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func

@@ -1,6 +1,10 @@
+import sys, os
+base_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(base_dir)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, workspaces, channels, messages, files, chat
+from routers import auth, workspaces, channels, messages, files, chat
 
 app = FastAPI(
     title="Safe Slack API",

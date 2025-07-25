@@ -1,5 +1,10 @@
+
+import sys, os
+base_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(base_dir)
+
 import asyncio
-from app.db.session import engine
+from db.session import engine
 from sqlalchemy import text
 
 async def init_db():

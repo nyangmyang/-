@@ -1,3 +1,6 @@
+import sys, os
+base_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(base_dir + "/../..")
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select

@@ -1,6 +1,10 @@
+import sys, os
+base_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(base_dir + "/../..")
+
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
-from app.core.config import settings
+from app.core.config import settings  # app.core.config → core.config로 변경
 from urllib.parse import quote_plus
 
 password = quote_plus(settings.DB_PASSWORD)

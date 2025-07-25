@@ -1,15 +1,19 @@
+import sys, os
+base_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(base_dir + "/../..")
+
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime, date
 from app.models.models import RequestStatus
 import asyncio
 from app.db.session import engine, Base
-from .user import *
-from .workspace import *
-from .channel import *
-from .message import *
-from .file import *
-from .auth import *
+from app.schemas.user import *
+from app.schemas.workspace import *
+from app.schemas.channel import *
+from app.schemas.message import *
+from app.schemas.file import *
+from app.schemas.auth import *
 
 # Base schemas
 class UserBase(BaseModel):
