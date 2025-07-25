@@ -1,16 +1,17 @@
 import sys, os
 import uvicorn
-from app.main import app
+
+# sys.path 설정을 맨 위로 이동
+base_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(base_dir + "/back")  # back 폴더를 추가
+
+from app.main import app  # 이제 app.main을 찾을 수 있음
 
 if __name__ == "__main__":
-    base_dir = os.path.abspath(os.path.dirname(__file__))  # 현재 스크립트 위치 절대경로
-
-    sys.path.append(base_dir + "/back/app")  # app 폴더 sys.path 에 추가
-    
     uvicorn.run(
-        "main:app",
-        host="localhost", # 테스트 용으로 로컬 호스트로 변경함 
+        app,  # 직접 app 객체 전달
+        host="localhost",
         port=8000,
         reload=True,
         log_level="info"
-    ) 
+    )
